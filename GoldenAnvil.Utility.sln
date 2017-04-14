@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldenAnvil.Utility.AccidentalNoise", "GoldenAnvil.Utility.AccidentalNoise\GoldenAnvil.Utility.AccidentalNoise.csproj", "{293ABB31-0CA5-42E2-B324-2250E99E2CD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldenAnvil.Utility", "GoldenAnvil.Utility\GoldenAnvil.Utility.csproj", "{71EC1554-7650-44CD-B30B-D1E5A2AE3C1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldenAnvil.Utility.Windows", "GoldenAnvil.Utility.Windows\GoldenAnvil.Utility.Windows.csproj", "{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{293ABB31-0CA5-42E2-B324-2250E99E2CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{293ABB31-0CA5-42E2-B324-2250E99E2CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{293ABB31-0CA5-42E2-B324-2250E99E2CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{293ABB31-0CA5-42E2-B324-2250E99E2CD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71EC1554-7650-44CD-B30B-D1E5A2AE3C1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71EC1554-7650-44CD-B30B-D1E5A2AE3C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71EC1554-7650-44CD-B30B-D1E5A2AE3C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71EC1554-7650-44CD-B30B-D1E5A2AE3C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
