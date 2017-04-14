@@ -30,8 +30,7 @@ namespace GoldenAnvil.Utility
 
 		public void RaiseCanExecuteChanged()
 		{
-			if (CanExecuteChanged != null)
-				CanExecuteChanged(this, EventArgs.Empty);
+			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		readonly Predicate<T> m_canExecute;
@@ -65,8 +64,7 @@ namespace GoldenAnvil.Utility
 
 		public void RaiseCanExecuteChanged()
 		{
-			if (CanExecuteChanged != null)
-				CanExecuteChanged(this, EventArgs.Empty);
+			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		readonly Func<bool> m_canExecute;

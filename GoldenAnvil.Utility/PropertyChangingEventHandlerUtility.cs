@@ -6,8 +6,7 @@ namespace GoldenAnvil.Utility
 	{
 		public static void Raise(this PropertyChangingEventHandler eventHandler, object sender, string propertyName)
 		{
-			if (eventHandler != null)
-				eventHandler(sender, new PropertyChangingEventArgs(propertyName));
+			eventHandler?.Invoke(sender, new PropertyChangingEventArgs(propertyName));
 		}
 	}
 }

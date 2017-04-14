@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Markup;
 
 namespace GoldenAnvil.Utility
 {
@@ -8,9 +7,9 @@ namespace GoldenAnvil.Utility
 		public static int NextRoll(this Random rng, int number, int dice)
 		{
 			if (number <= 0)
-				throw new ArgumentOutOfRangeException("number", "Number must be greater than 0.");
+				throw new ArgumentOutOfRangeException(nameof(number), "Number must be greater than 0.");
 			if (dice <= 0)
-				throw new ArgumentOutOfRangeException("dice", "Dice must be greater than 0.");
+				throw new ArgumentOutOfRangeException(nameof(dice), "Dice must be greater than 0.");
 
 			int value = 0;
 			for (int i = 0; i < number; i++)

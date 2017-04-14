@@ -16,14 +16,14 @@ namespace GoldenAnvil.Utility.Views
 			if (value == null)
 				return DependencyProperty.UnsetValue;
 			if (!(typeof(ICommand)).IsAssignableFrom(targetType))
-				throw new ArgumentException("Converter may only be used if targetType ({0}) is assignable to ICommand".FormatInvariant(targetType.Name), "targetType");
+				throw new ArgumentException($"Converter may only be used if targetType ({targetType.Name}) is assignable to ICommand", nameof(targetType));
 			if (!(parameter is string))
-				throw new ArgumentException("Parameter must be a string indicating the method name", "parameter");
+				throw new ArgumentException("Parameter must be a string indicating the method name", nameof(parameter));
 
 			Type valueType = value.GetType();
 			MethodInfo method = valueType.GetMethod((string) parameter, BindingFlags.Instance | BindingFlags.Public);
 			if (method == null)
-				throw new ArgumentException("Method ({0}) not found on type ({1})".FormatInvariant(parameter, valueType.Name));
+				throw new ArgumentException($"Method ({parameter}) not found on type ({valueType.Name})");
 
 			ICommand command;
 			ParameterInfo[] methodParameters = method.GetParameters();
@@ -59,7 +59,7 @@ namespace GoldenAnvil.Utility.Views
 			}
 			else
 			{
-				throw new ArgumentException("Method ({0}) found on type ({1}) may only have 0 or 1 parameter".FormatInvariant(parameter, valueType.Name));
+				throw new ArgumentException($"Method ({parameter}) found on type ({valueType.Name}) may only have 0 or 1 parameter");
 			}
 
 			return command;
