@@ -12,7 +12,7 @@ namespace GoldenAnvil.Utility.Logging
 			return new LogSource(name);
 		}
 
-		public void Initialize(params ILogDestination[] destinations)
+		public static void Initialize(params ILogDestination[] destinations)
 		{
 			if (s_instance != s_nullManager)
 				throw new InvalidOperationException($"{nameof(LogManager)} has already been initialized.");
