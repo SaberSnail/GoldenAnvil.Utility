@@ -43,6 +43,7 @@
     <Compile Include="DictionaryUtility.cs" />
     <Compile Include="EnumerableUtility.cs" />
     <Compile Include="EventHandlerUtility.cs" />
+    <Compile Include="HashCodeUtility.cs" />
     <Compile Include="LocalizationUtility.cs" />
     <Compile Include="MathUtility.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
