@@ -14,7 +14,7 @@ namespace GoldenAnvil.Utility.Logging
 
 		public void Initialize(params ILogDestination[] destinations)
 		{
-			if (s_instance != null)
+			if (s_instance != s_nullManager)
 				throw new InvalidOperationException($"{nameof(LogManager)} has already been initialized.");
 			s_instance = new LogManager(destinations);
 		}
@@ -29,10 +29,12 @@ namespace GoldenAnvil.Utility.Logging
 
 		private LogManager(IEnumerable<ILogDestination> destinations)
 		{
-			m_destinations = destinations.ToList().AsReadOnly();
+			m_destinations = destinations.EmptyIfNull().ToList().AsReadOnly();
 		}
 
-		static LogManager s_instance;
+		static readonly LogManager s_nullManager = new LogManager(null);
+
+		static LogManager s_instance = s_nullManager;
 
 		readonly ReadOnlyCollection<ILogDestination> m_destinations;
 	}
