@@ -45,6 +45,12 @@
     <Compile Include="EventHandlerUtility.cs" />
     <Compile Include="HashCodeUtility.cs" />
     <Compile Include="LocalizationUtility.cs" />
+    <Compile Include="Logging\ConsoleLogDestination.cs" />
+    <Compile Include="Logging\ILogDestination.cs" />
+    <Compile Include="Logging\ILogSource.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\LogSeverity.cs" />
+    <Compile Include="Logging\LogSource.cs" />
     <Compile Include="MathUtility.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="ObjectImpl.cs" />
