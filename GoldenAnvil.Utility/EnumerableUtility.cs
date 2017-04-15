@@ -1,19 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GoldenAnvil.Utility
 {
 	public static class EnumerableUtility
 	{
-		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
+		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> items)
 		{
-			return new HashSet<T>(source);
+			return new HashSet<T>(items);
 		}
 
-		public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T value)
+		public static IEnumerable<T> Append<T>(this IEnumerable<T> items, T value)
 		{
-			foreach (T item in source)
+			foreach (T item in items)
 				yield return item;
 			yield return value;
+		}
+
+		public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> items)
+		{
+			return items ?? Enumerable.Empty<T>();
+		}
+
+		public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> items)
+		{
+			return items.Where(x => x != null);
 		}
 	}
 }
