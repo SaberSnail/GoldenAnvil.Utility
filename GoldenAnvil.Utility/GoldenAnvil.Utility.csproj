@@ -51,6 +51,7 @@
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\LogSeverity.cs" />
     <Compile Include="Logging\LogSource.cs" />
+    <Compile Include="Logging\LogSourceUtility.cs" />
     <Compile Include="MathUtility.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="ObjectImpl.cs" />
