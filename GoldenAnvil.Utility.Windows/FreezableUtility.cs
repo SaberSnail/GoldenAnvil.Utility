@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public static class FreezableUtility
 	{

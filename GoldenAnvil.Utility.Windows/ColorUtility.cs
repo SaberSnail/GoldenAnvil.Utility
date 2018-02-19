@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public static class ColorUtility
 	{

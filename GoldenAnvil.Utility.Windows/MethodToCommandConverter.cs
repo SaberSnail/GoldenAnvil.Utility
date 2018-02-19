@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public sealed class MethodToCommandConverter : IValueConverter
 	{

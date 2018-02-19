@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Windows;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public static class DependencyPropertyUtility<T>
 	{

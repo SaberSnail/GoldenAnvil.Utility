@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public sealed class MenuButton : ToggleButton
 	{

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace GoldenAnvil.Utility.Views
+namespace GoldenAnvil.Utility.Windows
 {
 	public sealed class TrimmedElementToVisibilityConverter : IValueConverter
 	{

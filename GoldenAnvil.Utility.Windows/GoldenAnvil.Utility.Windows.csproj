@@ -7,8 +7,8 @@
     <ProjectGuid>{49EA99AF-8751-46FC-9FED-57FDD8F25E3B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoldenAnvil.Utility.Views</RootNamespace>
-    <AssemblyName>GoldenAnvil.Utility.Views</AssemblyName>
+    <RootNamespace>GoldenAnvil.Utility.Windows</RootNamespace>
+    <AssemblyName>GoldenAnvil.Utility.Windows</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
