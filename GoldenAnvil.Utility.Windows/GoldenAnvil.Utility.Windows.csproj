@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ColorUtility.cs" />
     <Compile Include="DependencyPropertyUtility.cs" />
+    <Compile Include="EnumToDisplayStringConverter.cs" />
     <Compile Include="FontSizeExtension.cs" />
     <Compile Include="FreezableUtility.cs" />
     <Compile Include="MenuButton.cs" />

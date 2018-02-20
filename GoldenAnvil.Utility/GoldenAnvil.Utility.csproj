@@ -60,6 +60,7 @@
     <Compile Include="PropertyChangingEventHandlerUtility.cs" />
     <Compile Include="RandomUtility.cs" />
     <Compile Include="ReflectionUtility.cs" />
+    <Compile Include="ResourceManagerUtility.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="StringUtility.cs" />
   </ItemGroup>
