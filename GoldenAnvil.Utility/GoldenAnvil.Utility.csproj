@@ -55,6 +55,7 @@
     <Compile Include="MathUtility.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="ObjectImpl.cs" />
+    <Compile Include="PluralizationUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedEventHandlerUtility.cs" />
     <Compile Include="PropertyChangingEventHandlerUtility.cs" />
