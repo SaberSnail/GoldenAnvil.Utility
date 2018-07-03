@@ -11,7 +11,7 @@ namespace GoldenAnvil.Utility
 	/// </summary>
 	public static class PluralizationUtility
 	{
-		public static string Pluralize(this ResourceManager resources, string baseKey, int value)
+		public static string Pluralize(this ResourceManager resources, string baseKey, long value)
 		{
 			var language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 			var pattern = s_patterns.GetValueOrDefault(language);
@@ -22,12 +22,12 @@ namespace GoldenAnvil.Utility
 
 		private interface IPluralizationPattern
 		{
-			string GetCardinalRuleName(int value);
+			string GetCardinalRuleName(long value);
 		}
 
 		private class EnglishPattern : IPluralizationPattern
 		{
-			public string GetCardinalRuleName(int value)
+			public string GetCardinalRuleName(long value)
 			{
 				if (value == 1)
 					return c_one;
