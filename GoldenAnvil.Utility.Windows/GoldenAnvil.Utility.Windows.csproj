@@ -50,6 +50,7 @@
     <Compile Include="FreezableUtility.cs" />
     <Compile Include="MenuButton.cs" />
     <Compile Include="MethodToCommandConverter.cs" />
+    <Compile Include="NotifyPropertyChangedDispatcherBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrimmedElementToVisibilityConverter.cs" />
   </ItemGroup>

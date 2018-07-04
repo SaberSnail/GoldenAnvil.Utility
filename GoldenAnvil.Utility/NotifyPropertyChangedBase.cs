@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GoldenAnvil.Utility
@@ -173,14 +174,24 @@ namespace GoldenAnvil.Utility
 		{
 		}
 
+		/// <summary>
+		/// Call this method to verify in DEBUG builds that this class can be accessed in the current context.
+		/// </summary>
+		[Conditional("DEBUG")]
+		protected virtual void VerifyAccess()
+		{
+		}
+
 		private void RaisePropertyChanging(string propertyName)
 		{
+			VerifyAccess();
 			OnPropertyChanging(propertyName);
 			PropertyChanging.Raise(this, propertyName);
 		}
 
 		private void RaisePropertyChanging(params string[] propertyNames)
 		{
+			VerifyAccess();
 			foreach (string propertyName in propertyNames)
 			{
 				if (!string.IsNullOrEmpty(propertyName))
@@ -193,12 +204,14 @@ namespace GoldenAnvil.Utility
 
 		private void RaisePropertyChanged(string propertyName)
 		{
+			VerifyAccess();
 			OnPropertyChanged(propertyName);
 			PropertyChanged.Raise(this, propertyName);
 		}
 
 		private void RaisePropertyChanged(params string[] propertyNames)
 		{
+			VerifyAccess();
 			foreach (string propertyName in propertyNames)
 			{
 				if (!string.IsNullOrEmpty(propertyName))
