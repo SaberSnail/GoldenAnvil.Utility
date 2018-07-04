@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorUtility.cs" />
+    <Compile Include="CommonConverters.cs" />
     <Compile Include="DependencyPropertyUtility.cs" />
     <Compile Include="EnumToDisplayStringConverter.cs" />
     <Compile Include="FontSizeExtension.cs" />
