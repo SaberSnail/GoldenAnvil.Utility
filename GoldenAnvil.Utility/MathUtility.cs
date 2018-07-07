@@ -9,9 +9,8 @@ namespace GoldenAnvil.Utility
 		public const double Cos30 = 0.8660254038;
 		public const double Cos60 = 0.5;
 
-		public static double Clamp(double value, double min, double max)
-		{
-			return Math.Max(Math.Min(value, max), min);
-		}
+		public static double DegreesToRadians(double degrees) => degrees * Math.PI / 180.0;
+
+		public static double Clamp(double value, double min, double max) => Math.Max(Math.Min(value, max), min);
 	}
 }
