@@ -4,9 +4,9 @@ namespace GoldenAnvil.Utility
 {
 	public static class LocalizationUtility
 	{
-		public static string FormatCurrentUiCulture(this string format, params object[] args)
+		public static string FormatCurrentCulture(this string format, params object[] args)
 		{
-			return string.Format(CultureInfo.CurrentUICulture, format, args);
+			return string.Format(CultureInfo.CurrentCulture, format, args);
 		}
 	}
 }
