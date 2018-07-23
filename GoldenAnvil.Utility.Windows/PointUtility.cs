@@ -11,5 +11,10 @@ namespace GoldenAnvil.Utility.Windows
 			var dy = point.Y - target.Y;
 			return Math.Sqrt((dx * dx) + (dy * dy));
 		}
+
+		public static Vector VectorTo(this Point point, Point target)
+		{
+			return new Vector(target.X - point.X, target.Y - point.Y);
+		}
 	}
 }
