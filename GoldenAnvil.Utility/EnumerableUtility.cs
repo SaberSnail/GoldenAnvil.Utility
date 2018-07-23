@@ -26,5 +26,10 @@ namespace GoldenAnvil.Utility
 		{
 			return items.Where(x => x != null);
 		}
+
+		public static IEnumerable<T> Enumerate<T>(params T[] items)
+		{
+			return items;
+		}
 	}
 }
