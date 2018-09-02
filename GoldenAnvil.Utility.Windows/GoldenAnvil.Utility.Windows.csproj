@@ -46,6 +46,7 @@
     <Compile Include="ColorUtility.cs" />
     <Compile Include="CommonConverters.cs" />
     <Compile Include="DependencyPropertyUtility.cs" />
+    <Compile Include="DispatcherUtility.cs" />
     <Compile Include="DrawingContextUtility.cs" />
     <Compile Include="EnumToDisplayStringConverter.cs" />
     <Compile Include="FontSizeExtension.cs" />
