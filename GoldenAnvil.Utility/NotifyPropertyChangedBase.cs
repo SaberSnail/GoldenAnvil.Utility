@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace GoldenAnvil.Utility
 {
@@ -20,13 +21,6 @@ namespace GoldenAnvil.Utility
 		/// Raised when a property changes.
 		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NotifyPropertyChangedBase"/> class.
-		/// </summary>
-		protected NotifyPropertyChangedBase()
-		{
-		}
 
 		/// <summary>
 		/// Raises the property changing event and returns an object that, when disposed,
@@ -67,6 +61,19 @@ namespace GoldenAnvil.Utility
 		}
 
 		/// <summary>
+		/// Sets the property field and raises property changed when value changes. This methods is intended
+		/// for use only in the setter of the property being changed.
+		/// </summary>
+		/// <param name="newValue">The new value of the field.</param>
+		/// <param name="field">The field.</param>
+		/// <param name="propertyName">Name of the property. Do not explicitly specify this value.</param>
+		/// <returns><c>true</c>, if the field was updated; otherwise <c>false</c>.</returns>
+		protected bool SetPropertyField<T>(T newValue, ref T field, [CallerMemberName] string propertyName = "")
+		{
+			return SetPropertyField(propertyName, newValue, ref field, EqualityComparer<T>.Default);
+		}
+
+		/// <summary>
 		/// Sets the property field and raises property changed when value changes.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
@@ -82,6 +89,20 @@ namespace GoldenAnvil.Utility
 			using (ScopedPropertyChange(propertyName))
 				field = newValue;
 			return true;
+		}
+
+		/// <summary>
+		/// Sets the property field and raises property changed when value changes. This methods is intended
+		/// for use only in the setter of the property being changed.
+		/// </summary>
+		/// <param name="newValue">The new value of the field.</param>
+		/// <param name="field">The field.</param>
+		/// <param name="comparer">The equality comparer.</param>
+		/// <param name="propertyName">Name of the property. Do not explicitly specify this value.</param>
+		/// <returns><c>true</c>, if the field was updated; otherwise <c>false</c>.</returns>
+		protected bool SetPropertyField<T>(T newValue, ref T field, IEqualityComparer<T> comparer, [CallerMemberName] string propertyName = "")
+		{
+			return SetPropertyField(propertyName, newValue, ref field, comparer);
 		}
 
 		/// <summary>
