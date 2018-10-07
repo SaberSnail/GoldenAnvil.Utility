@@ -15,7 +15,7 @@ namespace GoldenAnvil.Utility.Windows
 		{
 			if (value == null)
 				return DependencyProperty.UnsetValue;
-			if (!(typeof(ICommand)).IsAssignableFrom(targetType))
+			if (!targetType.IsAssignableFrom(typeof(ICommand)))
 				throw new ArgumentException($"Converter may only be used if targetType ({targetType.Name}) is assignable to ICommand", nameof(targetType));
 			if (!(parameter is string))
 				throw new ArgumentException("Parameter must be a string indicating the method name", nameof(parameter));
@@ -45,15 +45,15 @@ namespace GoldenAnvil.Utility.Windows
 			else if (methodParameters.Length == 1)
 			{
 				Type parameterType = methodParameters[0].ParameterType;
-				MethodInfo createAction = typeof(MethodToCommandConverter).GetMethod("CreateCommand", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(parameterType);
-
 				MethodInfo canMethod = valueType.GetMethod("Can" + (string) parameter, BindingFlags.Instance | BindingFlags.Public);
 				if (canMethod != null && canMethod.GetParameters().Length == 1)
 				{
+					MethodInfo createAction = typeof(MethodToCommandConverter).GetMethod("CreateCommandWithCan", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(parameterType);
 					command = (ICommand) createAction.Invoke(null, new[] { value, method, canMethod });
 				}
 				else
 				{
+					MethodInfo createAction = typeof(MethodToCommandConverter).GetMethod("CreateCommand", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(parameterType);
 					command = (ICommand) createAction.Invoke(null, new[] { value, method });
 				}
 			}
@@ -76,7 +76,7 @@ namespace GoldenAnvil.Utility.Windows
 			return new DelegateCommand<T>(execute);
 		}
 
-		private static ICommand CreateCommand<T>(object value, MethodInfo method, MethodInfo canMethod)
+		private static ICommand CreateCommandWithCan<T>(object value, MethodInfo method, MethodInfo canMethod)
 		{
 			Action<T> execute = (Action<T>) Delegate.CreateDelegate(typeof(Action<T>), value, method);
 			Predicate<T> canExecute = (Predicate<T>) Delegate.CreateDelegate(typeof(Predicate<T>), value, canMethod);
