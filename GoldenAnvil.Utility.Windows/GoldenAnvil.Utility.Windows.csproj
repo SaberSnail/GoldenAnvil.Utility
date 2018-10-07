@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorUtility.cs" />
+    <Compile Include="RoutedCommandToCommandBindingConverter.cs" />
+    <Compile Include="CommandUtility.cs" />
     <Compile Include="CommonConverters.cs" />
     <Compile Include="DependencyPropertyUtility.cs" />
     <Compile Include="DispatcherUtility.cs" />
