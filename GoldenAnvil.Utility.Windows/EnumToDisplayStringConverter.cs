@@ -13,6 +13,13 @@ namespace GoldenAnvil.Utility.Windows
 			if (!(parameter is ResourceManager resources))
 				throw new ArgumentException($"{nameof(parameter)} must be a ResourceManager.");
 
+			// sometimes an empty string can be passed instead of a null value
+			if (value is string stringValue)
+			{
+				if (stringValue == "")
+					return null;
+			}
+
 			var method = typeof(ResourceManagerUtility).GetMethod("EnumToDisplayString");
 			var generic = method.MakeGenericMethod(value.GetType());
 			return generic.Invoke(null, new [] { resources, value });
