@@ -15,6 +15,8 @@ namespace GoldenAnvil.Utility.Windows
 
 		public static readonly IValueConverter IsEqualToVisibility = new IsEqualToVisibilityConverter();
 
+		public static readonly IValueConverter IsNullToVisibility = new IsNullToVisibilityConverter();
+
 		private sealed class BooleanNotConverter : IValueConverter
 		{
 			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -71,6 +73,22 @@ namespace GoldenAnvil.Utility.Windows
 					throw new InvalidOperationException(@"The target must be assignable from a Visibility.");
 
 				return object.Equals(value, parameter) ? Visibility.Visible : Visibility.Collapsed;
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private sealed class IsNullToVisibilityConverter : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				if (!targetType.IsAssignableFrom(typeof(Visibility)))
+					throw new InvalidOperationException(@"The target must be assignable from a Visibility.");
+
+				return value is null ? Visibility.Collapsed : Visibility.Visible;
 			}
 
 			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
