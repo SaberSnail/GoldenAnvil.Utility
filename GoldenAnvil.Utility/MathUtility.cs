@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GoldenAnvil.Utility
 {
@@ -12,5 +13,24 @@ namespace GoldenAnvil.Utility
 		public static double DegreesToRadians(double degrees) => degrees * Math.PI / 180.0;
 
 		public static double Clamp(double value, double min, double max) => Math.Max(Math.Min(value, max), min);
+
+		public static IReadOnlyList<double> SolveQuadratic(double a, double b, double c)
+		{
+			var values = new List<double>();
+
+			var discriminant = (b * b) - (4 * a * c);
+			if (discriminant == 0.0)
+			{
+				values.Add(-b / (2 * a));
+			}
+			else if (discriminant > 0)
+			{
+				var sqrtOfDiscriminant = Math.Sqrt(discriminant);
+				values.Add((-b + sqrtOfDiscriminant) / (2 * a));
+				values.Add((-b - sqrtOfDiscriminant) / (2 * a));
+			}
+
+			return values;
+		}
 	}
 }
