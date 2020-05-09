@@ -21,5 +21,19 @@ namespace GoldenAnvil.Utility.Windows
 		{
 			return new Vector(target.X - point.X, target.Y - point.Y);
 		}
+
+		public static Point RotateAround(this Point point, Point center, double angleInRadians)
+		{
+			var cosA = Math.Cos(angleInRadians);
+			var sinA = Math.Sin(angleInRadians);
+
+			var x = point.X - center.X;
+			var y = point.Y - center.Y;
+
+			x = x * cosA - y * sinA;
+			y = x * sinA + y * cosA;
+
+			return new Point(x + center.X, y + center.Y);
+		}
 	}
 }
