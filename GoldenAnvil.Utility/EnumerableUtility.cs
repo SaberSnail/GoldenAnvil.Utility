@@ -5,11 +5,6 @@ namespace GoldenAnvil.Utility
 {
 	public static class EnumerableUtility
 	{
-		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> items)
-		{
-			return new HashSet<T>(items);
-		}
-
 		public static IEnumerable<T> Append<T>(this IEnumerable<T> items, T value)
 		{
 			foreach (T item in items)
