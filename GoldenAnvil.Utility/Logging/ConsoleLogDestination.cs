@@ -9,11 +9,11 @@ namespace GoldenAnvil.Utility.Logging
 			m_includeTimestamp = includeTimestamp;
 		}
 
-		public void LogMessage(LogSeverity severity, string message)
+		public void LogMessage(LogSeverity severity, string source, string message)
 		{
 			var formattedMessage = m_includeTimestamp ?
-				$"{GetCurrentTimestampString()} - {SeverityToString(severity)} - {message}" :
-				$"{SeverityToString(severity)} - {message}";
+				$"{GetCurrentTimestampString()} - {SeverityToString(severity)} - {source} - {message}" :
+				$"{SeverityToString(severity)} - {source} - {message}";
 			Console.WriteLine(formattedMessage);
 		}
 

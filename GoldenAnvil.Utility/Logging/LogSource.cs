@@ -11,17 +11,17 @@
 
 		public void Info(string message)
 		{
-			LogManager.Instance.LogMessage(LogSeverity.Info, message);
+			LogManager.Instance.LogMessage(LogSeverity.Info, Name, message);
 		}
 
 		public void Warn(string message)
 		{
-			LogManager.Instance.LogMessage(LogSeverity.Warn, message);
+			LogManager.Instance.LogMessage(LogSeverity.Warn, Name, message);
 		}
 
 		public void Error(string message)
 		{
-			LogManager.Instance.LogMessage(LogSeverity.Error, message);
+			LogManager.Instance.LogMessage(LogSeverity.Error, Name, message);
 		}
 	}
 }

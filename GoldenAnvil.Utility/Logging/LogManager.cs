@@ -21,10 +21,10 @@ namespace GoldenAnvil.Utility.Logging
 
 		internal static LogManager Instance => s_instance;
 
-		internal void LogMessage(LogSeverity severity, string message)
+		internal void LogMessage(LogSeverity severity, string source, string message)
 		{
 			foreach (var destination in m_destinations)
-				destination.LogMessage(severity, message);
+				destination.LogMessage(severity, source, message);
 		}
 
 		private LogManager(IEnumerable<ILogDestination> destinations)
