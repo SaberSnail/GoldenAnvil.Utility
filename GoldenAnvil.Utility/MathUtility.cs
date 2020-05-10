@@ -32,5 +32,13 @@ namespace GoldenAnvil.Utility
 
 			return values;
 		}
+
+		public static double NormalizeRadians(double angle)
+		{
+			var result = angle % (2.0 * Math.PI);
+			if (result < 0.0)
+				result += 2.0 * Math.PI;
+			return result;
+		}
 	}
 }
