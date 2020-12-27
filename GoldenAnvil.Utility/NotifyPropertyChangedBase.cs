@@ -203,6 +203,17 @@ namespace GoldenAnvil.Utility
 		{
 		}
 
+		/// <summary>
+		/// Call this method to verify in DEBUG builds that this class can be accessed in the current context.
+		/// </summary>
+		/// <param name="value">The value to return.</param>
+		/// <returns>The value passed as an argument.</returns>
+		protected T VerifyAccess<T>(T value)
+		{
+			VerifyAccess();
+			return value;
+		}
+
 		private void RaisePropertyChanging(string propertyName)
 		{
 			VerifyAccess();
