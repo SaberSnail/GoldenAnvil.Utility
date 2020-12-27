@@ -59,6 +59,7 @@
     <Compile Include="NotifyPropertyChangedDispatcherBase.cs" />
     <Compile Include="PointUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Theme\ThemesUtility.cs" />
     <Compile Include="TrimmedElementToVisibilityConverter.cs" />
   </ItemGroup>
   <ItemGroup>
