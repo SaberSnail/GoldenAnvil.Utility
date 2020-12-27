@@ -47,6 +47,7 @@
     <Compile Include="EnumUtility.cs" />
     <Compile Include="EventHandlerUtility.cs" />
     <Compile Include="GenericComparer.cs" />
+    <Compile Include="GenericEqualityComparer.cs" />
     <Compile Include="HashCodeUtility.cs" />
     <Compile Include="LocalizationUtility.cs" />
     <Compile Include="Logging\ConsoleLogDestination.cs" />
