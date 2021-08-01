@@ -8,5 +8,11 @@ namespace GoldenAnvil.Utility
 		{
 			eventHandler?.Invoke(sender, new PropertyChangedEventArgs(propertyName));
 		}
+
+		public static bool HasChanged(this PropertyChangedEventArgs e, string propertyName)
+		{
+			var eventPropertyName = e.PropertyName;
+			return string.IsNullOrEmpty(eventPropertyName) || propertyName == eventPropertyName;
+		}
 	}
 }
