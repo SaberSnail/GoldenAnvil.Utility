@@ -5,6 +5,7 @@ namespace GoldenAnvil.Utility
 {
 	public static class DictionaryUtility
 	{
+#if NET472
 		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
 		{
 			dictionary.TryGetValue(key, out TValue value);
@@ -15,6 +16,7 @@ namespace GoldenAnvil.Utility
 		{
 			return dictionary.TryGetValue(key, out TValue value) ? value : defaultValue;
 		}
+#endif
 
 		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> defaultCreator)
 		{

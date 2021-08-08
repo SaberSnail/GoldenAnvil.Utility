@@ -1,87 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{293ABB31-0CA5-42E2-B324-2250E99E2CD1}</ProjectGuid>
+    <TargetFrameworks>net5.0;net472</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AccidentalNoise</RootNamespace>
     <AssemblyName>AccidentalNoise</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.237901">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasisType.cs" />
-    <Compile Include="CombineOperationType.cs" />
-    <Compile Include="FractalType.cs" />
-    <Compile Include="GradientOverflow.cs" />
-    <Compile Include="ImplicitAutoCorrectNoiseModule.cs" />
-    <Compile Include="ImplicitBasisFunctionNoiseModule.cs" />
-    <Compile Include="ImplicitBiasNoiseModule.cs" />
-    <Compile Include="ImplicitCacheNoiseModule.cs" />
-    <Compile Include="ImplicitCombineNoiseModule.cs" />
-    <Compile Include="ImplicitConicalGradientNoiseModule.cs" />
-    <Compile Include="ImplicitConstantNoiseModule.cs" />
-    <Compile Include="ImplicitDomainTransformNoiseModule.cs" />
-    <Compile Include="ImplicitFractalNoiseModule.cs" />
-    <Compile Include="ImplicitGradientNoiseModule.cs" />
-    <Compile Include="ImplicitLinearGradientNoiseModule.cs" />
-    <Compile Include="ImplicitNoiseModuleBase.cs" />
-    <Compile Include="ImplicitRadialGradientNoiseModule.cs" />
-    <Compile Include="ImplicitSelectNoiseModule.cs" />
-    <Compile Include="ImplicitValueTransformNoiseModule.cs" />
-    <Compile Include="InterpolationType.cs" />
-    <Compile Include="NoiseUtility.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomNumberGeneratorBase.cs" />
+    <ProjectReference Include="..\GoldenAnvil.Utility\GoldenAnvil.Utility.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GoldenAnvil.Utility\GoldenAnvil.Utility.csproj">
-      <Project>{71ec1554-7650-44cd-b30b-d1e5a2ae3c1e}</Project>
-      <Name>GoldenAnvil.Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
