@@ -54,13 +54,13 @@ namespace GoldenAnvil.Utility.Windows.Theme
 
 		private static void ApplyTheme(FrameworkElement element, Uri dictionaryUri)
 		{
-			var existingDictionaries = element.Resources.MergedDictionaries.OfType<ThemeResourceDIctionary>().ToList();
+			var existingDictionaries = element.Resources.MergedDictionaries.OfType<ThemeResourceDictionary>().ToList();
 			foreach (var dictionary in existingDictionaries)
 				element.Resources.MergedDictionaries.Remove(dictionary);
 
 			if (dictionaryUri != null)
 			{
-				CurrentThemeDictionary = new ThemeResourceDIctionary { Source = dictionaryUri };
+				CurrentThemeDictionary = new ThemeResourceDictionary { Source = dictionaryUri };
 				element.Resources.MergedDictionaries.Insert(0, CurrentThemeDictionary);
 			}
 			else
@@ -93,7 +93,7 @@ namespace GoldenAnvil.Utility.Windows.Theme
 		}
 
 
-		private sealed class ThemeResourceDIctionary : ResourceDictionary
+		private sealed class ThemeResourceDictionary : ResourceDictionary
 		{
 		}
 	}
