@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
@@ -16,6 +17,8 @@ namespace GoldenAnvil.Utility.Windows
 		public static readonly IValueConverter IsEqualToVisibility = new IsEqualToVisibilityConverter();
 
 		public static readonly IValueConverter IsNullToVisibility = new IsNullToVisibilityConverter();
+
+		public static readonly IMultiValueConverter Max = new MaxConverter();
 
 		private sealed class BooleanNotConverter : IValueConverter
 		{
@@ -92,6 +95,19 @@ namespace GoldenAnvil.Utility.Windows
 			}
 
 			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private sealed class MaxConverter : IMultiValueConverter
+		{
+			object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+			{
+				return values.Cast<IComparable>().Max();
+			}
+
+			object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
 			{
 				throw new NotImplementedException();
 			}
