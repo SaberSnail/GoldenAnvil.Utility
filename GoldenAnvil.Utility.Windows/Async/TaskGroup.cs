@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -7,68 +6,75 @@ using Microsoft.VisualStudio.Threading;
 
 namespace GoldenAnvil.Utility.Windows.Async
 {
+	public sealed class TaskStateController
+	{
+		public TaskStateController(CancellationToken token)
+		{
+			m_syncContextScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+			m_cancellationToken = token;
+		}
+
+		public async Task ToSyncContext() => await m_syncContextScheduler;
+
+		public async Task ToThreadPool() => await TaskScheduler.Default;
+
+		public void ThrowIfCancelled() => m_cancellationToken.ThrowIfCancellationRequested();
+
+		private readonly TaskScheduler m_syncContextScheduler;
+		private readonly CancellationToken m_cancellationToken;
+	}
 	public sealed class TaskGroup : IDisposable
 	{
 		public TaskGroup()
 		{
 			m_dispatcher = Dispatcher.CurrentDispatcher;
-			m_syncContextScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			m_tokenSources = new List<CancellationTokenSource>();
+			m_tokenSource = new CancellationTokenSource();
 		}
 
 		public void Dispose()
 		{
-			foreach (var tokenSource in m_tokenSources)
-			{
-				tokenSource.Cancel();
-				tokenSource.Dispose();
-			}
+			m_tokenSource.Cancel();
+			m_tokenSource.Dispose();
 		}
 
-		internal async Task RegisterTaskAsync(Func<CancellationToken, Task> task)
+		public async TaskState StartWork()
+		{
+			await RegisterTaskAsync();
+		}
+
+		internal async Task RegisterTaskAsync(Func<TaskStateController, Task> task, CancellationToken token = default)
 		{
 			m_dispatcher.VerifyCurrent();
-			var tokenSource = new CancellationTokenSource();
-			m_tokenSources.Add(tokenSource);
-
+			var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(m_tokenSource.Token, token);
+			var controller = new TaskStateController(linkedTokenSource.Token);
+			
 			try
 			{
-				await task(tokenSource.Token).ConfigureAwait(false);
+				await task(controller).ConfigureAwait(false);
 			}
-			catch (OperationCanceledException e) when (e.CancellationToken == tokenSource.Token)
+			catch (OperationCanceledException)
 			{
-			}
-			finally
-			{
-				await m_syncContextScheduler;
-				m_tokenSources.Remove(tokenSource);
 			}
 		}
 
-		internal async Task<T> RegisterTaskAsync<T>(Func<CancellationToken, Task<T>> task)
+		internal async Task<T> RegisterTaskAsync<T>(Func<TaskStateController, Task<T>> task, CancellationToken token = default)
 		{
 			m_dispatcher.VerifyCurrent();
-			var tokenSource = new CancellationTokenSource();
-			m_tokenSources.Add(tokenSource);
+			var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(m_tokenSource.Token, token);
+			var controller = new TaskStateController(linkedTokenSource.Token);
 
 			T result = default;
 			try
 			{
-				result = await task(tokenSource.Token).ConfigureAwait(false);
+				result = await task(controller).ConfigureAwait(false);
 			}
-			catch (OperationCanceledException e) when (e.CancellationToken == tokenSource.Token)
+			catch (OperationCanceledException)
 			{
-			}
-			finally
-			{
-				await m_syncContextScheduler;
-				m_tokenSources.Remove(tokenSource);
 			}
 			return result;
 		}
 
 		private readonly Dispatcher m_dispatcher;
-		private readonly TaskScheduler m_syncContextScheduler;
-		private readonly List<CancellationTokenSource> m_tokenSources;
+		private readonly CancellationTokenSource m_tokenSource;
 	}
 }
