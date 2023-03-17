@@ -23,6 +23,12 @@ namespace GoldenAnvil.Utility.Windows.Async
 		private readonly TaskScheduler m_syncContextScheduler;
 		private readonly CancellationToken m_cancellationToken;
 	}
+
+	public sealed class TaskState : NotifyPropertyChangedDispatcherBase
+	{
+		public void Cancel()
+		{}
+	}
 	public sealed class TaskGroup : IDisposable
 	{
 		public TaskGroup()
