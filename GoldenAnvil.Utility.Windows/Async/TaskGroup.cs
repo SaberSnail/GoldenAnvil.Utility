@@ -2,33 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Microsoft.VisualStudio.Threading;
 
 namespace GoldenAnvil.Utility.Windows.Async
 {
-	public sealed class TaskStateController
-	{
-		public TaskStateController(CancellationToken token)
-		{
-			m_syncContextScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			m_cancellationToken = token;
-		}
-
-		public async Task ToSyncContext() => await m_syncContextScheduler;
-
-		public async Task ToThreadPool() => await TaskScheduler.Default;
-
-		public void ThrowIfCancelled() => m_cancellationToken.ThrowIfCancellationRequested();
-
-		private readonly TaskScheduler m_syncContextScheduler;
-		private readonly CancellationToken m_cancellationToken;
-	}
-
-	public sealed class TaskState : NotifyPropertyChangedDispatcherBase
-	{
-		public void Cancel()
-		{}
-	}
 	public sealed class TaskGroup : IDisposable
 	{
 		public TaskGroup()
@@ -43,12 +19,7 @@ namespace GoldenAnvil.Utility.Windows.Async
 			m_tokenSource.Dispose();
 		}
 
-		public async TaskState StartWork()
-		{
-			await RegisterTaskAsync();
-		}
-
-		internal async Task RegisterTaskAsync(Func<TaskStateController, Task> task, CancellationToken token = default)
+		internal async Task RegisterTaskAsync(Func<TaskStateController, Task> doTask, CancellationToken token = default)
 		{
 			m_dispatcher.VerifyCurrent();
 			var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(m_tokenSource.Token, token);
@@ -56,7 +27,7 @@ namespace GoldenAnvil.Utility.Windows.Async
 			
 			try
 			{
-				await task(controller).ConfigureAwait(false);
+				await doTask(controller).ConfigureAwait(false);
 			}
 			catch (OperationCanceledException)
 			{
