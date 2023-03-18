@@ -5,19 +5,6 @@ namespace GoldenAnvil.Utility
 {
 	public static class DictionaryUtility
 	{
-#if NET472
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-		{
-			dictionary.TryGetValue(key, out TValue value);
-			return value;
-		}
-
-		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-		{
-			return dictionary.TryGetValue(key, out TValue value) ? value : defaultValue;
-		}
-#endif
-
 		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> defaultCreator)
 		{
 			return dictionary.TryGetValue(key, out TValue value) ? value : defaultCreator();
