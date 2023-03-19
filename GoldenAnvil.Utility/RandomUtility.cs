@@ -1,9 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GoldenAnvil.Utility
 {
 	public static class RandomUtility
 	{
+		public static void Shuffle<T>(this Random rng, IList<T> list)
+		{
+			if (list.Count <= 1)
+				return;
+
+			for (int i = 0; i < list.Count - 2; i++)
+			{
+				var j = rng.Next(i, list.Count - 1);
+				T value = list[i];
+				list[i] = list[j];
+				list[j] = value;
+			}
+		}
+
 		public static int NextRoll(this Random rng, int number, int dice)
 		{
 			if (number <= 0)
