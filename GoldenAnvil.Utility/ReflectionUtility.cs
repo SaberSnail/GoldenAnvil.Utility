@@ -44,4 +44,10 @@ namespace GoldenAnvil.Utility
 			}
 		}
 	}
+
+	public static class ReflectionUtility
+	{
+		public static bool IsSameOrSubclassOf(this Type itemType, Type baseType) =>
+			itemType.IsSubclassOf(baseType) || itemType == baseType;
+	}
 }
