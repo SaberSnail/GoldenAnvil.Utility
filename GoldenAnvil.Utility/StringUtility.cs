@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -23,5 +24,8 @@ namespace GoldenAnvil.Utility
 
 			return builder.ToString();
 		}
+
+		public static bool Contains(this string value, string check, StringComparison comparison) =>
+			value.IndexOf(check, comparison) >= 0;
 	}
 }
