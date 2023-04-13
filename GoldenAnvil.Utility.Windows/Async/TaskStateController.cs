@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Threading;
 
 namespace GoldenAnvil.Utility.Windows.Async
 {
@@ -12,18 +11,26 @@ namespace GoldenAnvil.Utility.Windows.Async
 			m_cancellationToken = token;
 		}
 
-		public async Task ToSyncContext()
+		/// <summary>
+		/// This can be awaited in order to switch to the sync context.
+		/// The ability to await a TaskScheduler requires Microsoft.VisualStudio.Threading.
+		/// </summary>
+		/// <returns>A TaskScheduler that can be awaited.</returns>
+		public TaskScheduler ToSyncContext()
 		{
 			m_cancellationToken.ThrowIfCancellationRequested();
-			await m_syncContextScheduler;
-			m_cancellationToken.ThrowIfCancellationRequested();
+			return m_syncContextScheduler;
 		}
 
-		public async Task ToThreadPool()
+		/// <summary>
+		/// This can be awaited in order to switch to the thread pool context.
+		/// The ability to await a TaskScheduler requires Microsoft.VisualStudio.Threading.
+		/// </summary>
+		/// <returns>A TaskScheduler that can be awaited.</returns>
+		public TaskScheduler ToThreadPool()
 		{
 			m_cancellationToken.ThrowIfCancellationRequested();
-			await TaskScheduler.Default;
-			m_cancellationToken.ThrowIfCancellationRequested();
+			return TaskScheduler.Default;
 		}
 
 		public CancellationToken CancellationToken => m_cancellationToken;
