@@ -23,6 +23,20 @@ namespace GoldenAnvil.Utility
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>
+		/// Call to determine if any PropertyChanging handlers have been added.
+		/// </summary>
+		/// <returns>true if any PropertyChanging handlers have been added.</returns>
+		protected bool HasAnyPropertyChangingHandlers() =>
+			PropertyChanging is not null;
+
+		/// <summary>
+		/// Call to determine if any PropertyChanged handlers have been added.
+		/// </summary>
+		/// <returns>true if any PropertyChanged handlers have been added.</returns>
+		protected bool HasAnyPropertyChangedHandlers() =>
+			PropertyChanged is not null;
+		
+		/// <summary>
 		/// Raises the property changing event and returns an object that, when disposed,
 		/// will raise the property changed event.
 		/// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GoldenAnvil.Utility.Logging;
 
 namespace GoldenAnvil.Utility.Windows.Async
 {
@@ -72,12 +73,34 @@ namespace GoldenAnvil.Utility.Windows.Async
 		private void RaiseChangedProperties(Task task)
 		{
 			if (task.IsCanceled)
+			{
 				ScopedPropertyChange(nameof(Status), nameof(IsCanceled), nameof(IsCompleted)).Dispose();
+			}
 			else if (task.IsFaulted)
+			{
+				if (!HasAnyPropertyChangedHandlers())
+				{
+					ThreadPool.QueueUserWorkItem(_ =>
+					{
+						if (Exception != null)
+						{
+							if (Exception != null)
+							{
+								Log.Error($"Unhandled exception in Task:\n{Exception}");
+								throw Exception;
+							}
+						}
+					});
+				}
 				ScopedPropertyChange(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted)).Dispose();
+			}
 			else
+			{
 				ScopedPropertyChange(nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
+			}
 		}
+
+		private static ILogSource Log { get; } = LogManager.CreateLogSource(nameof(TaskWatcher));
 
 		private readonly CancellationTokenSource m_tokenSource;
 	}
@@ -143,12 +166,31 @@ namespace GoldenAnvil.Utility.Windows.Async
 		private void RaiseChangedProperties(Task task)
 		{
 			if (task.IsCanceled)
+			{
 				ScopedPropertyChange(nameof(Status), nameof(IsCanceled), nameof(IsCompleted)).Dispose();
+			}
 			else if (task.IsFaulted)
+			{
+				if (!HasAnyPropertyChangedHandlers())
+				{
+					ThreadPool.QueueUserWorkItem(_ =>
+					{
+						if (Exception != null)
+						{
+							Log.Error($"Unhandled exception in Task<T>:\n{Exception}");
+							throw Exception;
+						}
+					});
+				}
 				ScopedPropertyChange(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted)).Dispose();
+			}
 			else
+			{
 				ScopedPropertyChange(nameof(Result), nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
+			}
 		}
+
+		private static ILogSource Log { get; } = LogManager.CreateLogSource(nameof(TaskWatcher<T>));
 
 		private readonly CancellationTokenSource m_tokenSource;
 		private readonly T m_defaultResult;
