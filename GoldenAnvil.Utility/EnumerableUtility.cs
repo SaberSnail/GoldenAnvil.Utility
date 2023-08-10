@@ -19,33 +19,6 @@ namespace GoldenAnvil.Utility
 				(items is IList<T> list ? (IReadOnlyList<T>) new ReadOnlyListAdapter<T>(list) : items.ToList().AsReadOnly());
 		}
 
-		public static T FirstOrDefault<T>(this IEnumerable<T> items, T defaultValue)
-		{
-			if (items is null)
-				throw new ArgumentNullException(nameof(items));
-
-			foreach (var item in items)
-				return item;
-
-			return defaultValue;
-		}
-
-		public static T FirstOrDefault<T>(this IEnumerable<T> items, Func<T, bool> predicate, T defaultValue)
-		{
-			if (items is null)
-				throw new ArgumentNullException(nameof(items));
-			if (predicate is null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			foreach (var item in items)
-			{
-				if (predicate(item))
-					return item;
-			}
-
-			return defaultValue;
-		}
-
 		private sealed class ReadOnlyListAdapter<T> : IReadOnlyList<T>
 		{
 			public ReadOnlyListAdapter(IList<T> list) => m_list = list ?? throw new ArgumentNullException(nameof(list));
