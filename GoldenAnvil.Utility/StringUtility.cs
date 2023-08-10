@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GoldenAnvil.Utility
 {
@@ -27,5 +30,22 @@ namespace GoldenAnvil.Utility
 
 		public static bool Contains(this string value, string check, StringComparison comparison) =>
 			value.IndexOf(check, comparison) >= 0;
+
+		public static IReadOnlyList<string> GetWordsFromCamelCase(string input)
+		{
+			return Regex.Matches(input, @"(^[\p{Ll}]+|[\p{Lu}\p{N}]+(?![\p{Ll}])|\p{P}?[\p{Lu}][\p{Ll}]+)")
+				.OfType<Match>()
+				.Select(m => m.Value)
+				.AsReadOnlyList();
+		}
+
+		public static T? TryParse<T>(string value, IFormatProvider formatProvider = null)
+		where T : struct, IParsable<T>
+		{
+			var format = formatProvider ?? CultureInfo.CurrentCulture;
+			if (T.TryParse(value, format, out var result))
+				return result;
+			return null;
+		}
 	}
 }
