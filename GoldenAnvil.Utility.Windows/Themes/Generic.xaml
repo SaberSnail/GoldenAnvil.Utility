@@ -4,9 +4,9 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="TextBox.xaml" />
-		<ResourceDictionary Source="ToolTip.xaml" />
-		<ResourceDictionary Source="TreeView.xaml" />
+		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/TextBox.xaml" />
+		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/ToolTip.xaml" />
+		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/TreeView.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
