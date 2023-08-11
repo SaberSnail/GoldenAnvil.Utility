@@ -52,20 +52,19 @@
 						</VisualStateManager.VisualStateGroups>
 						<Grid>
 							<ScrollViewer x:Name="PART_ContentHost" Margin="0" />
-							<ContentControl
+							<TextBlock
 								VerticalAlignment="Center"
 								IsHitTestVisible="False"
-								IsTabStop="False"
 								Visibility="{TemplateBinding Text, Converter={x:Static utility:CommonConverters.IsNullOrEmptyToInverseVisibility}}"
-								Content="{TemplateBinding Hint}"
+								Text="{TemplateBinding Hint}"
 								>
-								<ContentControl.Margin>
+								<TextBlock.Margin>
 									<MultiBinding Converter="{x:Static utility:CommonConverters.ThicknessSum}">
 										<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Padding" />
 										<Binding Source="{StaticResource ContentPadding}" />
 									</MultiBinding>
-								</ContentControl.Margin>
-							</ContentControl>
+								</TextBlock.Margin>
+							</TextBlock>
 						</Grid>
 					</Border>
 				</ControlTemplate>

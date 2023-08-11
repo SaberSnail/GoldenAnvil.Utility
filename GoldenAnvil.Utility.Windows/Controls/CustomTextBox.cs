@@ -12,9 +12,9 @@ namespace GoldenAnvil.Utility.Windows.Controls
 
 		public static readonly DependencyProperty HintProperty = DependencyPropertyUtility<CustomTextBox>.Register(x => x.Hint);
 
-		public object Hint
+		public string Hint
 		{
-			get { return GetValue(HintProperty); }
+			get { return (string) GetValue(HintProperty); }
 			set { SetValue(HintProperty, value); }
 		}
 	}
