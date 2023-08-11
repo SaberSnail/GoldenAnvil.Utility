@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 
-namespace GoldenAnvil.Utility.Windows.Theme
+namespace GoldenAnvil.Utility.Windows.Themes
 {
 	public static class ThemesUtility
 	{
@@ -76,7 +76,7 @@ namespace GoldenAnvil.Utility.Windows.Theme
 			if (d is UIElement element)
 			{
 				var value = d.GetValue(ShouldInvalidateOnThemeChangeProperty);
-				if (value == DependencyProperty.UnsetValue || ((bool) value) == false)
+				if (value == DependencyProperty.UnsetValue || (bool) value == false)
 					RemoveNeedsInvalidateVisualHandler(element, OnNeedsInvalidate);
 				else if ((bool) value)
 					AddNeedsInvalidateVisualHandler(element, OnNeedsInvalidate);
