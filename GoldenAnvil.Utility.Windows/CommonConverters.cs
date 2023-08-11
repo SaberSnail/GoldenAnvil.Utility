@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -20,7 +21,11 @@ namespace GoldenAnvil.Utility.Windows
 
 		public static readonly IValueConverter IsNullToVisibility = new IsNullToVisibilityConverter();
 
+		public static readonly IValueConverter IsNullOrEmptyToInverseVisibility = new IsNullOrEmptyToInverseVisibilityConverter();
+
 		public static readonly IMultiValueConverter Max = new MaxConverter();
+
+		public static readonly IMultiValueConverter ThicknessSum = new ThicknessSumConverter();
 
 		private sealed class BooleanNotConverter : IValueConverter
 		{
@@ -118,11 +123,52 @@ namespace GoldenAnvil.Utility.Windows
 			}
 		}
 
+		private sealed class IsNullOrEmptyToInverseVisibilityConverter : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				if (!targetType.IsAssignableFrom(typeof(Visibility)))
+					throw new InvalidOperationException(@"The target must be assignable from a Visibility.");
+
+				if (value is null)
+					return Visibility.Visible;
+				if (value is string stringValue)
+					return stringValue.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+				return Visibility.Visible;
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
 		private sealed class MaxConverter : IMultiValueConverter
 		{
 			object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
 			{
 				return values.Cast<IComparable>().Max();
+			}
+
+			object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private sealed class ThicknessSumConverter : IMultiValueConverter
+		{
+			object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+			{
+				var sum = new Thickness();
+				foreach (var thickness in values.Cast<Thickness>())
+				{
+					sum.Left += thickness.Left;
+					sum.Top += thickness.Top;
+					sum.Right += thickness.Right;
+					sum.Bottom += thickness.Bottom;
+				}
+				return sum;
 			}
 
 			object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
