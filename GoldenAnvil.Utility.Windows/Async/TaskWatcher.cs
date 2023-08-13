@@ -7,23 +7,28 @@ namespace GoldenAnvil.Utility.Windows.Async
 {
 	public sealed class TaskWatcher : NotifyPropertyChangedDispatcherBase
 	{
-		public static TaskWatcher Create(Func<TaskStateController, Task> doTask, TaskGroup group)
+		public static TaskWatcher Execute(Func<TaskStateController, Task> doTask, TaskGroup group)
 		{
 			var tokenSource = new CancellationTokenSource();
 			var task = group.RegisterTaskAsync(doTask, tokenSource.Token);
 			return new(task, tokenSource);
 		}
 
-		public static TaskWatcher<T> Create<T>(Func<TaskStateController, Task<T>> doTask, TaskGroup group, T defaultResult = default)
+		public static TaskWatcher<T> Execute<T>(Func<TaskStateController, Task<T>> doTask, TaskGroup group, T defaultResult = default)
 		{
 			var tokenSource = new CancellationTokenSource();
 			var task = group.RegisterTaskAsync(doTask, tokenSource.Token);
 			return new(task, tokenSource, defaultResult);
 		}
 
-		public Task Task { get; }
+		public static TaskWatcher Create(Func<TaskStateController, Task> doTask, TaskGroup group)
+		{
+			return new(doTask, group);
+		}
 
-		public Task TaskCompleted { get; }
+		public Task Task { get; private set; }
+
+		public Task TaskCompleted { get; private set; }
 
 		public TaskStatus Status => Task.Status;
 
@@ -41,9 +46,30 @@ namespace GoldenAnvil.Utility.Windows.Async
 
 		public string ErrorMessage => InnerException?.Message;
 
+		public void Start()
+		{
+			if (m_doTask is null || m_group is null)
+				throw new InvalidOperationException("TaskWatcher can only be run once");
+
+			var doTask = m_doTask;
+			m_doTask = null;
+			var group = m_group;
+			m_group = null;
+
+			m_tokenSource = new CancellationTokenSource();
+			Task = group.RegisterTaskAsync(doTask, m_tokenSource.Token);
+			TaskCompleted = WatchTaskAsync(Task);
+		}
+
 		public void Cancel() => m_tokenSource.Cancel();
 
 		internal CancellationToken Token => m_tokenSource.Token;
+
+		private TaskWatcher(Func<TaskStateController, Task> doTask, TaskGroup group)
+		{
+			m_doTask = doTask;
+			m_group = group;
+		}
 
 		private TaskWatcher(Task task, CancellationTokenSource tokenSource)
 		{
@@ -84,11 +110,8 @@ namespace GoldenAnvil.Utility.Windows.Async
 					{
 						if (Exception != null)
 						{
-							if (Exception != null)
-							{
-								Log.Error($"Unhandled exception in Task:\n{Exception}");
-								throw Exception;
-							}
+							Log.Error($"Unhandled exception in Task:\n{Exception}");
+							throw Exception;
 						}
 					});
 				}
@@ -96,20 +119,22 @@ namespace GoldenAnvil.Utility.Windows.Async
 			}
 			else
 			{
-				ScopedPropertyChange(nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
+				ScopedPropertyChange(nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted)).Dispose();
 			}
 		}
 
 		private static ILogSource Log { get; } = LogManager.CreateLogSource(nameof(TaskWatcher));
 
-		private readonly CancellationTokenSource m_tokenSource;
+		private Func<TaskStateController, Task> m_doTask;
+		private TaskGroup m_group;
+		private CancellationTokenSource m_tokenSource;
 	}
 
 	public sealed class TaskWatcher<T> : NotifyPropertyChangedDispatcherBase
 	{
-		public Task<T> Task { get; }
+		public Task<T> Task { get; private set; }
 
-		public Task TaskCompleted { get; }
+		public Task TaskCompleted { get; private set; }
 
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
 #pragma warning disable VSTHRD104 // Offer async methods
@@ -133,9 +158,30 @@ namespace GoldenAnvil.Utility.Windows.Async
 
 		public string ErrorMessage => InnerException?.Message;
 
+		public void Start()
+		{
+			if (m_doTask is null || m_group is null)
+				throw new InvalidOperationException("TaskWatcher can only be run once");
+
+			var doTask = m_doTask;
+			m_doTask = null;
+			var group = m_group;
+			m_group = null;
+
+			m_tokenSource = new CancellationTokenSource();
+			Task = group.RegisterTaskAsync(doTask, m_tokenSource.Token);
+			TaskCompleted = WatchTaskAsync(Task);
+		}
+
 		public void Cancel() => m_tokenSource.Cancel();
 
 		internal CancellationToken Token => m_tokenSource.Token;
+
+		private TaskWatcher(Func<TaskStateController, Task<T>> doTask, TaskGroup group)
+		{
+			m_doTask = doTask;
+			m_group = group;
+		}
 
 		internal TaskWatcher(Task<T> task, CancellationTokenSource tokenSource, T defaultResult)
 		{
@@ -192,7 +238,10 @@ namespace GoldenAnvil.Utility.Windows.Async
 
 		private static ILogSource Log { get; } = LogManager.CreateLogSource(nameof(TaskWatcher<T>));
 
-		private readonly CancellationTokenSource m_tokenSource;
 		private readonly T m_defaultResult;
+
+		private CancellationTokenSource m_tokenSource;
+		private Func<TaskStateController, Task<T>> m_doTask;
+		private TaskGroup m_group;
 	}
 }
