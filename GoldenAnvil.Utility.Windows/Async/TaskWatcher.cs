@@ -100,7 +100,7 @@ namespace GoldenAnvil.Utility.Windows.Async
 		{
 			if (task.IsCanceled)
 			{
-				ScopedPropertyChange(nameof(Status), nameof(IsCanceled), nameof(IsCompleted)).Dispose();
+				RaisePropertyChanged(nameof(Status), nameof(IsCanceled), nameof(IsCompleted));
 			}
 			else if (task.IsFaulted)
 			{
@@ -115,11 +115,11 @@ namespace GoldenAnvil.Utility.Windows.Async
 						}
 					});
 				}
-				ScopedPropertyChange(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted)).Dispose();
+				RaisePropertyChanged(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted));
 			}
 			else
 			{
-				ScopedPropertyChange(nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted)).Dispose();
+				RaisePropertyChanged(nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
 			}
 		}
 
@@ -213,7 +213,7 @@ namespace GoldenAnvil.Utility.Windows.Async
 		{
 			if (task.IsCanceled)
 			{
-				ScopedPropertyChange(nameof(Status), nameof(IsCanceled), nameof(IsCompleted)).Dispose();
+				RaisePropertyChanged(nameof(Status), nameof(IsCanceled), nameof(IsCompleted));
 			}
 			else if (task.IsFaulted)
 			{
@@ -228,11 +228,11 @@ namespace GoldenAnvil.Utility.Windows.Async
 						}
 					});
 				}
-				ScopedPropertyChange(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted)).Dispose();
+				RaisePropertyChanged(nameof(Exception), nameof(InnerException), nameof(ErrorMessage), nameof(Status), nameof(IsFaulted), nameof(IsCompleted));
 			}
 			else
 			{
-				ScopedPropertyChange(nameof(Result), nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
+				RaisePropertyChanged(nameof(Result), nameof(Status), nameof(IsSuccessfullyCompleted), nameof(IsCompleted));
 			}
 		}
 

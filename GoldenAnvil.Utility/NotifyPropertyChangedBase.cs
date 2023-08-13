@@ -228,14 +228,14 @@ namespace GoldenAnvil.Utility
 			return value;
 		}
 
-		private void RaisePropertyChanging(string propertyName)
+		protected void RaisePropertyChanging(string propertyName)
 		{
 			VerifyAccess();
 			OnPropertyChanging(propertyName);
 			PropertyChanging.Raise(this, propertyName);
 		}
 
-		private void RaisePropertyChanging(params string[] propertyNames)
+		protected void RaisePropertyChanging(params string[] propertyNames)
 		{
 			VerifyAccess();
 			foreach (string propertyName in propertyNames)
@@ -248,14 +248,14 @@ namespace GoldenAnvil.Utility
 			}
 		}
 
-		private void RaisePropertyChanged(string propertyName)
+		protected void RaisePropertyChanged(string propertyName)
 		{
 			VerifyAccess();
 			OnPropertyChanged(propertyName);
 			PropertyChanged.Raise(this, propertyName);
 		}
 
-		private void RaisePropertyChanged(params string[] propertyNames)
+		protected void RaisePropertyChanged(params string[] propertyNames)
 		{
 			VerifyAccess();
 			foreach (string propertyName in propertyNames)
