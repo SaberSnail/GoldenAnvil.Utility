@@ -10,12 +10,12 @@ namespace GoldenAnvil.Utility.Windows.Controls
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomTextBox), new FrameworkPropertyMetadata(typeof(CustomTextBox)));
 		}
 
-		public static readonly DependencyProperty HintProperty = DependencyPropertyUtility<CustomTextBox>.Register(x => x.Hint);
+		public static readonly DependencyProperty HintTextProperty = DependencyPropertyUtility<CustomTextBox>.Register(x => x.HintText);
 
-		public string Hint
+		public string HintText
 		{
-			get { return (string) GetValue(HintProperty); }
-			set { SetValue(HintProperty, value); }
+			get { return (string) GetValue(HintTextProperty); }
+			set { SetValue(HintTextProperty, value); }
 		}
 	}
 }

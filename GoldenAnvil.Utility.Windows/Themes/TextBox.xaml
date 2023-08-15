@@ -56,7 +56,7 @@
 								VerticalAlignment="Center"
 								IsHitTestVisible="False"
 								Visibility="{TemplateBinding Text, Converter={x:Static utility:CommonConverters.IsNullOrEmptyToInverseVisibility}}"
-								Text="{TemplateBinding Hint}"
+								Text="{TemplateBinding HintText}"
 								>
 								<TextBlock.Margin>
 									<MultiBinding Converter="{x:Static utility:CommonConverters.ThicknessSum}">
