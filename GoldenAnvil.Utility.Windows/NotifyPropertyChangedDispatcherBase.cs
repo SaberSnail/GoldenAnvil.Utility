@@ -9,8 +9,16 @@ namespace GoldenAnvil.Utility.Windows
 		/// Initializes a new instance of the <see cref="NotifyPropertyChangedDispatcherBase"/> class.
 		/// </summary>
 		protected NotifyPropertyChangedDispatcherBase()
+			: this(Dispatcher.CurrentDispatcher)
 		{
-			Dispatcher = Dispatcher.CurrentDispatcher;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="NotifyPropertyChangedDispatcherBase"/> class.
+		/// </summary>
+		protected NotifyPropertyChangedDispatcherBase(Dispatcher dispatcher)
+		{
+			Dispatcher = dispatcher;
 		}
 
 		/// <summary>
