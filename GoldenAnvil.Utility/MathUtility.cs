@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 
 namespace GoldenAnvil.Utility
 {
@@ -13,6 +15,10 @@ namespace GoldenAnvil.Utility
 		public static double DegreesToRadians(double degrees) => degrees * Math.PI / 180.0;
 
 		public static double Clamp(double value, double min, double max) => Math.Max(Math.Min(value, max), min);
+
+		public static T Max<T>(params T[] values) where T : INumber<T> => values.Max();
+
+		public static T Min<T>(params T[] values) where T : INumber<T> => values.Min();
 
 		public static IReadOnlyList<double> SolveQuadratic(double a, double b, double c)
 		{
