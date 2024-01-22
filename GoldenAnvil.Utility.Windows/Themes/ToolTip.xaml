@@ -4,7 +4,10 @@
 	xmlns:markup="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:windows="clr-namespace:GoldenAnvil.Utility.Windows">
 
-	<Style x:Key="TrimmedInPlaceToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource {markup:Type ToolTip}}">
+	<Style
+		x:Key="TrimmedInPlaceToolTipStyle"
+		BasedOn="{StaticResource {markup:Type ToolTip}}"
+		TargetType="ToolTip">
 		<Setter Property="Placement" Value="Relative" />
 		<Setter Property="VerticalOffset" Value="-5" />
 		<Setter Property="HorizontalOffset" Value="-7" />
