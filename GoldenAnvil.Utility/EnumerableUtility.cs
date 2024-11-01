@@ -19,6 +19,21 @@ namespace GoldenAnvil.Utility
 				(items is IList<T> list ? (IReadOnlyList<T>) new ReadOnlyListAdapter<T>(list) : items.ToList().AsReadOnly());
 		}
 
+		public static bool StartsWith<T>(this IEnumerable<T> items, IEnumerable<T> that) where T : class
+		{
+			var thatList = that.AsReadOnlyList();
+			var itemsEnumerator = items.GetEnumerator();
+			foreach (var thatItem in thatList)
+			{
+				if (!itemsEnumerator.MoveNext())
+					return false;
+				var thisItem = itemsEnumerator.Current;
+				if (!thisItem.Equals(thatItem))
+					return false;
+			}
+			return true;
+		}
+
 		private sealed class ReadOnlyListAdapter<T> : IReadOnlyList<T>
 		{
 			public ReadOnlyListAdapter(IList<T> list) => m_list = list ?? throw new ArgumentNullException(nameof(list));
