@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <PlatformTarget>x64</PlatformTarget>
     <Authors>GoldenAnvil</Authors>
     <Company>Golden Anvil</Company>
-    <Copyright>Copyright © 2017-2023</Copyright>
+    <Copyright>Copyright © 2017-2024</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
