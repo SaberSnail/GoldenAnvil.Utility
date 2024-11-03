@@ -4,11 +4,31 @@ using System.Diagnostics;
 namespace GoldenAnvil.Utility.Calendar;
 
 [DebuggerDisplay("{SecondOffset}")]
-public readonly record struct TimeOffset(long SecondOffset) : IComparable<TimeOffset>
+public class TimeOffset : IComparable<TimeOffset>
 {
-	public static readonly TimeOffset OneSecond = new(1);
+	internal TimeOffset(long offsetSeconds, ICalendar calendar)
+	{
+		TotalSeconds = offsetSeconds;
+		Calendar = calendar;
+	}
 
-	public int CompareTo(TimeOffset that) => SecondOffset.CompareTo(that.SecondOffset);
+	public long TotalSeconds { get; }
+
+	internal ICalendar Calendar { get; }
+
+	public string RenderTimeFrom(TimePoint point, TimeFormat format)
+	{
+		if (Calendar != point.Calendar)
+			throw new InvalidOperationException("Time point and offset must be created with the same calendar.");
+		return Calendar.FormatOffsetFrom(point, this, format);
+	}
+
+	public int CompareTo(TimeOffset that)
+	{
+		if (Calendar != that.Calendar)
+			throw new InvalidOperationException("Offsets must be created with the same calendar.");
+		return TotalSeconds.CompareTo(that.TotalSeconds);
+	}
 
 	public static bool operator <(TimeOffset left, TimeOffset right) => left.CompareTo(right) < 0;
 
@@ -18,9 +38,17 @@ public readonly record struct TimeOffset(long SecondOffset) : IComparable<TimeOf
 
 	public static bool operator >=(TimeOffset left, TimeOffset right) => left.CompareTo(right) >= 0;
 
-	public static TimeOffset operator -(TimeOffset left, TimeOffset right) =>
-		new(left.SecondOffset - right.SecondOffset);
+	public static TimeOffset operator -(TimeOffset left, TimeOffset right)
+	{
+		if (left.Calendar != right.Calendar)
+			throw new InvalidOperationException("Offsets must be created with the same calendar.");
+		return new(left.TotalSeconds - right.TotalSeconds, left.Calendar);
+	}
 
-	public static TimeOffset operator +(TimeOffset left, TimeOffset right) =>
-		new(left.SecondOffset + right.SecondOffset);
+	public static TimeOffset operator +(TimeOffset left, TimeOffset right)
+	{
+		if (left.Calendar != right.Calendar)
+			throw new InvalidOperationException("Offsets must be created with the same calendar.");
+		return new(left.TotalSeconds + right.TotalSeconds, left.Calendar);
+	}
 }
