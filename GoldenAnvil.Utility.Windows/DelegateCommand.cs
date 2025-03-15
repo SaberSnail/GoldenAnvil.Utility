@@ -14,6 +14,7 @@ namespace GoldenAnvil.Utility
 		{
 			m_execute = execute;
 			m_canExecute = canExecute;
+			CommandManager.RequerySuggested += OnRequerySuggested;
 		}
 
 		public event EventHandler CanExecuteChanged;
@@ -33,6 +34,9 @@ namespace GoldenAnvil.Utility
 			CanExecuteChanged.Raise(this);
 		}
 
+		private void OnRequerySuggested(object sender, EventArgs e) =>
+			RaiseCanExecuteChanged();
+
 		readonly Predicate<T> m_canExecute;
 		readonly Action<T> m_execute;
 	}
@@ -48,6 +52,7 @@ namespace GoldenAnvil.Utility
 		{
 			m_execute = execute;
 			m_canExecute = canExecute;
+			CommandManager.RequerySuggested += OnRequerySuggested;
 		}
 
 		public event EventHandler CanExecuteChanged;
@@ -66,6 +71,9 @@ namespace GoldenAnvil.Utility
 		{
 			CanExecuteChanged.Raise(this);
 		}
+
+		private void OnRequerySuggested(object sender, EventArgs e) =>
+			RaiseCanExecuteChanged();
 
 		readonly Func<bool> m_canExecute;
 		readonly Action m_execute;
