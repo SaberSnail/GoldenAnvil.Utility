@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GoldenAnvil.Utility
@@ -32,6 +33,69 @@ namespace GoldenAnvil.Utility
 					return false;
 			}
 			return true;
+		}
+
+		public static bool AllMatchFirst<TItem, TValue>(this IEnumerable<TItem> items, Func<TItem, TValue> predicate)
+		{
+			bool isFirst = true;
+			var value = default(TValue);
+			foreach (var item in items)
+			{
+				if (isFirst)
+				{
+					value = predicate(item);
+					isFirst = false;
+				}
+				else
+				{
+					if (!EqualityComparer<TValue>.Default.Equals(value, predicate(item)))
+						return false;
+				}
+			}
+			return !isFirst;
+		}
+
+		public static bool AllMatchFirstNotNull<TItem, TValue>(this IEnumerable<TItem> items, Func<TItem, TValue> predicate)
+		{
+			bool isFirst = true;
+			var value = default(TValue);
+			foreach (var item in items)
+			{
+				if (isFirst)
+				{
+					value = predicate(item);
+					if (value is null)
+						return false;
+					isFirst = false;
+				}
+				else
+				{
+					if (!EqualityComparer<TValue>.Default.Equals(value, predicate(item)))
+						return false;
+				}
+			}
+			return !isFirst;
+		}
+
+		public static bool AllMatchFirstOrNull<TItem, TValue>(this IEnumerable<TItem> items, Func<TItem, TValue> predicate)
+		{
+			bool isFirst = true;
+			var value = default(TValue);
+			foreach (var item in items)
+			{
+				isFirst = false;
+				var currentValue = predicate(item);
+				if (value is null)
+				{
+					currentValue = value;
+				}
+				else if (currentValue is not null)
+				{
+					if (!EqualityComparer<TValue>.Default.Equals(value, predicate(item)))
+						return false;
+				}
+			}
+			return !isFirst;
 		}
 
 		private sealed class ReadOnlyListAdapter<T> : IReadOnlyList<T>
