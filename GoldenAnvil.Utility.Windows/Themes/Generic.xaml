@@ -1,12 +1,10 @@
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    >
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/TextBox.xaml" />
-		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/ToolTip.xaml" />
-		<ResourceDictionary Source="/GoldenANvil.Utility.Windows;component/Themes/TreeView.xaml" />
+		<ResourceDictionary Source="/GoldenAnvil.Utility.Windows;component/Themes/TextBox.xaml" />
+		<ResourceDictionary Source="/GoldenAnvil.Utility.Windows;component/Themes/ToolTip.xaml" />
+		<ResourceDictionary Source="/GoldenAnvil.Utility.Windows;component/Themes/TreeView.xaml" />
+		<ResourceDictionary Source="/GoldenAnvil.Utility.Windows;component/Themes/Splitter.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
