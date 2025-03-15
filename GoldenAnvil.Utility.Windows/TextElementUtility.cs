@@ -3,11 +3,35 @@ using System.Collections.Generic;
 using System.Windows.Documents;
 using System.Windows;
 using System.Globalization;
+using System.Windows.Controls;
 
 namespace GoldenAnvil.Utility.Windows
 {
 	public static class TextElementUtility
 	{
+		public static readonly DependencyProperty TextProperty =
+	DependencyProperty.RegisterAttached("Text", typeof(IEnumerable<Inline>), typeof(TextElementUtility), new PropertyMetadata(null, OnTextChanged));
+
+		public static IEnumerable<Inline> GetText(DependencyObject dependencyObject) =>
+			(IEnumerable<Inline>) dependencyObject.GetValue(TextProperty);
+
+		public static void SetText(DependencyObject dependencyObject, IEnumerable<Inline> value) =>
+			dependencyObject.SetValue(TextProperty, value);
+
+		private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			if (d is TextBlock textBlock)
+			{
+				textBlock.Inlines.Clear();
+				var textElements = GetText(d);
+				foreach (var textElement in textElements.EmptyIfNull())
+					textBlock.Inlines.Add(textElement);
+				return;
+			}
+
+			throw new InvalidOperationException($"The target of the Text property is not of a supported type: {d.GetType().Name}");
+		}
+
 		public static IReadOnlyList<Inline> FormatInlineString(string format, string styleName, params Inline[] inlines)
 		{
 			var style = styleName is null ? null : (Style) Application.Current.FindResource(styleName);
