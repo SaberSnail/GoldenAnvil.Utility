@@ -28,6 +28,19 @@ namespace GoldenAnvil.Utility
 			return builder.ToString();
 		}
 
+		public static string Join(this IEnumerable<string> parts, char joinChar)
+		{
+			var builder = new StringBuilder();
+			foreach (var part in parts)
+			{
+				if (builder.Length != 0)
+					builder.Append(joinChar);
+				builder.Append(part);
+			}
+
+			return builder.ToString();
+		}
+
 		public static bool Contains(this string value, string check, StringComparison comparison) =>
 			value.IndexOf(check, comparison) >= 0;
 
