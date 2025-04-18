@@ -19,5 +19,16 @@ namespace GoldenAnvil.Utility.Windows
 			}
 		}
 
+		public static T GetAncestor<T>(DependencyObject obj) where T : DependencyObject
+		{
+			obj = VisualTreeHelper.GetParent(obj);
+			while (obj != null)
+			{
+				if (obj is T ancestor)
+					return ancestor;
+				obj = VisualTreeHelper.GetParent(obj);
+			}
+			return null;
+		}
 	}
 }
