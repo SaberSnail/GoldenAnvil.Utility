@@ -10,6 +10,8 @@ namespace GoldenAnvil.Utility.Windows
 			return new Point(point.X + that.X, point.Y + that.Y);
 		}
 
+		public static Point WithOffset(this Point point, double x, double y) => new Point(point.X + x, point.Y + y);
+
 		public static double DistanceTo(this Point point, Point target)
 		{
 			var dx = point.X - target.X;
