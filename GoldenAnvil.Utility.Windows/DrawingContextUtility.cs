@@ -15,5 +15,17 @@ namespace GoldenAnvil.Utility.Windows
 			context.PushClip(clip);
 			return Scope.Create(context.Pop);
 		}
+
+		public static Scope ScopedGuidelineSet(this DrawingContext context, GuidelineSet guidelineSet)
+		{
+			context.PushGuidelineSet(guidelineSet);
+			return Scope.Create(context.Pop);
+		}
+
+		public static Scope ScopedOpacity(this DrawingContext context, double opacity)
+		{
+			context.PushOpacity(opacity);
+			return Scope.Create(context.Pop);
+		}
 	}
 }
