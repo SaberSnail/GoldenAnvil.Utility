@@ -97,6 +97,22 @@ public class StandardCalendar : ICalendar
 	public TimePoint GetStartOfDay(TimePoint time) =>
 		new(m_secondsInDay * (time.TotalSeconds / m_secondsInDay), this);
 
+	public TimePointParts GetParts(TimePoint point)
+	{
+		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(point.TotalSeconds);
+		return new((int) years, (int) months, (int) days, (int) hours, (int) minutes, (int) seconds);
+	}
+
+	public TimeOffsetParts GetParts(TimeOffset offset)
+	{
+		var totalSeconds = offset.TotalSeconds;
+		return new(
+			totalSeconds / m_secondsInDay,
+			(int) (totalSeconds % m_secondsInDay / m_secondsInHour),
+			(int) (totalSeconds % m_secondsInHour / m_secondsInMinute),
+			(int) (totalSeconds % m_secondsInMinute));
+	}
+
 	public string FormatTime(TimePoint point, TimeFormat format)
 	{
 		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(point.TotalSeconds);

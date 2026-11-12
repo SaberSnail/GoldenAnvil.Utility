@@ -7,6 +7,8 @@ public interface ICalendar
 	TimePoint CreateTimePoint(TimePoint date, int hours, int minutes, int seconds);
 	TimeOffset CreateTimeOffset(int days, int hours, int minutes, int seconds);
 	TimePoint GetStartOfDay(TimePoint time);
+	TimePointParts GetParts(TimePoint point);
+	TimeOffsetParts GetParts(TimeOffset offset);
 	string FormatTime(TimePoint point, TimeFormat format);
 	string FormatOffsetFrom(TimePoint point, TimeOffset offset, TimeFormat format);
 }

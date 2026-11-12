@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace GoldenAnvil.Utility.Calendar;
 
-[DebuggerDisplay("{Seconds}")]
+[DebuggerDisplay("{TotalSeconds}")]
 public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 {
 	internal TimePoint(long seconds, ICalendar calendar)
@@ -13,6 +13,20 @@ public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 	}
 
 	public long TotalSeconds { get; }
+
+	public TimePointParts Parts => Calendar.GetParts(this);
+
+	public int Year => Parts.Year;
+
+	public int Month => Parts.Month;
+
+	public int Day => Parts.Day;
+
+	public int Hour => Parts.Hour;
+
+	public int Minute => Parts.Minute;
+
+	public int Second => Parts.Second;
 
 	internal ICalendar Calendar { get; }
 
@@ -27,6 +41,8 @@ public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 
 	public int CompareTo(TimePoint that)
 	{
+		if (that is null)
+			return 1;
 		if (Calendar != that.Calendar)
 			throw new InvalidOperationException("Points must be created with the same calendar.");
 		return TotalSeconds.CompareTo(that.TotalSeconds);

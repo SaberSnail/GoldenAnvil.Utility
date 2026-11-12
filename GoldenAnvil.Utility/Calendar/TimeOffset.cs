@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace GoldenAnvil.Utility.Calendar;
 
-[DebuggerDisplay("{SecondOffset}")]
+[DebuggerDisplay("{TotalSeconds}")]
 public class TimeOffset : IComparable<TimeOffset>, IEquatable<TimeOffset>
 {
 	internal TimeOffset(long offsetSeconds, ICalendar calendar)
@@ -13,6 +13,16 @@ public class TimeOffset : IComparable<TimeOffset>, IEquatable<TimeOffset>
 	}
 
 	public long TotalSeconds { get; }
+
+	public TimeOffsetParts Parts => Calendar.GetParts(this);
+
+	public long Days => Parts.Days;
+
+	public int Hours => Parts.Hours;
+
+	public int Minutes => Parts.Minutes;
+
+	public int Seconds => Parts.Seconds;
 
 	internal ICalendar Calendar { get; }
 
@@ -25,6 +35,8 @@ public class TimeOffset : IComparable<TimeOffset>, IEquatable<TimeOffset>
 
 	public int CompareTo(TimeOffset that)
 	{
+		if (that is null)
+			return 1;
 		if (Calendar != that.Calendar)
 			throw new InvalidOperationException("Offsets must be created with the same calendar.");
 		return TotalSeconds.CompareTo(that.TotalSeconds);
