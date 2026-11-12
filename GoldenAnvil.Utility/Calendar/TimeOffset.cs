@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace GoldenAnvil.Utility.Calendar;
 
 [DebuggerDisplay("{SecondOffset}")]
-public class TimeOffset : IComparable<TimeOffset>
+public class TimeOffset : IComparable<TimeOffset>, IEquatable<TimeOffset>
 {
 	internal TimeOffset(long offsetSeconds, ICalendar calendar)
 	{
@@ -29,6 +29,17 @@ public class TimeOffset : IComparable<TimeOffset>
 			throw new InvalidOperationException("Offsets must be created with the same calendar.");
 		return TotalSeconds.CompareTo(that.TotalSeconds);
 	}
+
+	public bool Equals(TimeOffset that) =>
+		that is not null && Calendar == that.Calendar && TotalSeconds == that.TotalSeconds;
+
+	public override bool Equals(object obj) => Equals(obj as TimeOffset);
+
+	public override int GetHashCode() => TotalSeconds.GetHashCode();
+
+	public static bool operator ==(TimeOffset left, TimeOffset right) => left?.Equals(right) ?? right is null;
+
+	public static bool operator !=(TimeOffset left, TimeOffset right) => !(left == right);
 
 	public static bool operator <(TimeOffset left, TimeOffset right) => left.CompareTo(right) < 0;
 

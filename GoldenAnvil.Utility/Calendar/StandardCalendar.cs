@@ -42,20 +42,9 @@ public class StandardCalendar : ICalendar
 				return current;
 			}).AsReadOnlyList();
 		m_daysInStandardYear = config.DaysInMonth.Sum();
-		if (config.UseLeapYear)
-		{
-			m_daysInLeapYear = m_daysInStandardYear + 1;
-			m_daysIn4Years = (4 * m_daysInStandardYear) + 1;
-			m_daysIn100Years = (100 * m_daysInStandardYear) + 24;
-			m_daysIn400Years = (400 * m_daysInStandardYear) + 97;
-		}
-		else
-		{
-			m_daysInLeapYear = m_daysInStandardYear;
-			m_daysIn4Years = 4 * m_daysInStandardYear;
-			m_daysIn100Years = 100 * m_daysInStandardYear;
-			m_daysIn400Years = 400 * m_daysInStandardYear;
-		}
+		m_daysIn4Years = (4 * m_daysInStandardYear) + 1;
+		m_daysIn100Years = (100 * m_daysInStandardYear) + 24;
+		m_daysIn400Years = (400 * m_daysInStandardYear) + 97;
 	}
 
 	public TimePoint CreateTimePoint(int year, int month, int day) =>
@@ -63,24 +52,26 @@ public class StandardCalendar : ICalendar
 
 	public TimePoint CreateTimePoint(int year, int month, int day, int hour, int minute, int second)
 	{
+		if (year < c_minYear || year > c_maxYear)
+			throw new ArgumentException($"{nameof(year)} must be between {c_minYear} and {c_maxYear}.");
 		if (month < 1 || month > m_daysInMonth.Count)
 			throw new ArgumentException($"{nameof(month)} must be between 1 and {m_daysInMonth.Count}.");
-		if (hour < 0 || hour > m_hoursInDay)
-			throw new ArgumentException($"{nameof(hour)} must be between 0 and {m_hoursInDay}.");
-		if (minute < 0 || minute > m_minutesInHour)
-			throw new ArgumentException($"{nameof(minute)} must be between 0 and {m_minutesInHour}.");
-		if (second < 0 || second > m_secondsInMinute)
-			throw new ArgumentException($"{nameof(second)} must be between 0 and {m_secondsInMinute}.");
+		if (hour < 0 || hour >= m_hoursInDay)
+			throw new ArgumentException($"{nameof(hour)} must be between 0 and {m_hoursInDay - 1}.");
+		if (minute < 0 || minute >= m_minutesInHour)
+			throw new ArgumentException($"{nameof(minute)} must be between 0 and {m_minutesInHour - 1}.");
+		if (second < 0 || second >= m_secondsInMinute)
+			throw new ArgumentException($"{nameof(second)} must be between 0 and {m_secondsInMinute - 1}.");
 
-		var isLeapYear = IsLeapYear(year);
-		if (day < 1 || day > m_daysInMonth[month - 1] + (isLeapYear ? 1 : 0))
-			throw new ArgumentException($"{nameof(day)} must be between 1 and {m_daysInMonth[month - 1] + (isLeapYear ? 1 : 0)}.");
+		var daysInMonth = GetDaysInMonth(month, year);
+		if (day < 1 || day > daysInMonth)
+			throw new ArgumentException($"{nameof(day)} must be between 1 and {daysInMonth}.");
 
-		var totalDays = GetDaysInYears(year);
+		var totalDays = GetDaysBeforeYear(year);
 		totalDays += m_daysToStartOfMonth[month - 1];
 		if (IsLeapYear(year) && month > m_leapYearMonth)
 			totalDays++;
-		totalDays += day;
+		totalDays += day - 1;
 
 		var secondsForDays = totalDays * m_secondsInDay;
 		var secondsForHours = hour * m_secondsInHour;
@@ -121,27 +112,14 @@ public class StandardCalendar : ICalendar
 		(var startYears, var startMonths, var startDays, var startHours, var startMinutes, var startSeconds) = SplitSeconds(point.TotalSeconds);
 		(var endYears, var endMonths, var endDays, var endHours, var endMinutes, var endSeconds) = SplitSeconds((point + offset).TotalSeconds);
 
-		var seconds = endSeconds >= startSeconds ? endSeconds - startSeconds : m_secondsInMinute - startSeconds + endSeconds;
-
-		var minutes = endMinutes >= startMinutes ? endMinutes - startMinutes : m_minutesInHour - startMinutes + endMinutes;
-		if (endSeconds < startSeconds)
-			minutes--;
-
-		var hours = endHours >= startHours ? endHours - startHours : m_hoursInDay - startHours + endHours;
-		if (endMinutes < startMinutes)
-			hours--;
-
-		var days = endDays >= startDays ? endDays - startDays : GetDaysInMonth((int) startMonths, (int) startYears) - startDays + endDays;
-		if (endHours < startHours)
-			days--;
-
-		var months = endMonths >= startMonths ? endMonths - startMonths : m_daysInMonth.Count - startMonths + endMonths;
-		if (endDays < startDays)
-			months--;
-
-		var years = endYears - startYears;
-		if (endMonths < startMonths)
-			years--;
+		// Subtract each part, borrowing from the next larger part when the result is negative.
+		var borrow = 0L;
+		var seconds = Subtract(endSeconds, startSeconds, m_secondsInMinute, ref borrow);
+		var minutes = Subtract(endMinutes, startMinutes, m_minutesInHour, ref borrow);
+		var hours = Subtract(endHours, startHours, m_hoursInDay, ref borrow);
+		var days = Subtract(endDays, startDays, GetDaysInMonth(startMonths, startYears), ref borrow);
+		var months = Subtract(endMonths, startMonths, m_daysInMonth.Count, ref borrow);
+		var years = endYears - startYears - borrow;
 
 		var terms = new List<string>();
 		if (years != 0)
@@ -171,23 +149,20 @@ public class StandardCalendar : ICalendar
 		return output;
 	}
 
-	private long GetDaysInYears(long years)
+	private static long Subtract(long end, long start, long unitsInNextPart, ref long borrow)
 	{
-		var remainingYears = years;
-		var totalDays = (years / 400) * m_daysIn400Years;
-		remainingYears = years % 400;
-		totalDays += (remainingYears / 100) * m_daysIn100Years;
-		remainingYears = remainingYears % 100;
-		totalDays += (remainingYears / 4) * m_daysIn4Years;
-		remainingYears = remainingYears % 4;
+		var difference = end - start - borrow;
+		borrow = difference < 0 ? 1 : 0;
+		return difference + (borrow * unitsInNextPart);
+	}
 
-		if (remainingYears != 0 && IsLeapYear(years - remainingYears))
-		{
-			totalDays += m_daysInLeapYear;
-			remainingYears--;
-		}
-
-		totalDays += remainingYears * m_daysInStandardYear;
+	// Days are counted from the first day of year 1, as DateTime counts them.
+	private long GetDaysBeforeYear(long year)
+	{
+		var previousYears = year - 1;
+		var totalDays = previousYears * m_daysInStandardYear;
+		if (m_useLeapYear)
+			totalDays += (previousYears / 4) - (previousYears / 100) + (previousYears / 400);
 		return totalDays;
 	}
 
@@ -209,38 +184,36 @@ public class StandardCalendar : ICalendar
 
 	private (long Years, long Months, long Days) SplitDays(long totalDays)
 	{
-		long years = 0;
-		long months = 0;
-		long days = 0;
+		long years;
+		long dayOfYear;
+		if (m_useLeapYear)
+		{
+			// Each 400 year cycle starts at year 1 and ends with a leap year, so the last century in the cycle
+			// and the last year in each 4 year block are one day longer; Math.Min keeps their last day in them.
+			var remainingDays = totalDays;
+			var cycles400 = remainingDays / m_daysIn400Years;
+			remainingDays %= m_daysIn400Years;
+			var cycles100 = Math.Min(remainingDays / m_daysIn100Years, 3);
+			remainingDays -= cycles100 * m_daysIn100Years;
+			var cycles4 = remainingDays / m_daysIn4Years;
+			remainingDays %= m_daysIn4Years;
+			var cycles1 = Math.Min(remainingDays / m_daysInStandardYear, 3);
+			remainingDays -= cycles1 * m_daysInStandardYear;
 
-		var remainingDays = totalDays;
-		years = (remainingDays / m_daysIn400Years) * 400;
-		remainingDays = remainingDays % m_daysIn400Years;
-		years += (remainingDays / m_daysIn100Years) * 100;
-		remainingDays = remainingDays % m_daysIn100Years;
-		years += (remainingDays / m_daysIn4Years) * 4;
-		remainingDays = remainingDays % m_daysIn4Years;
+			years = (cycles400 * 400) + (cycles100 * 100) + (cycles4 * 4) + cycles1 + 1;
+			dayOfYear = remainingDays;
+		}
+		else
+		{
+			years = (totalDays / m_daysInStandardYear) + 1;
+			dayOfYear = totalDays % m_daysInStandardYear;
+		}
+
 		var isLeapYear = IsLeapYear(years);
-		if (remainingDays > (isLeapYear ? m_daysInLeapYear : m_daysInStandardYear))
-		{
-			years++;
-			remainingDays -= isLeapYear ? m_daysInLeapYear : m_daysInStandardYear;
-
-			years += remainingDays / m_daysInStandardYear;
-			remainingDays = remainingDays % m_daysInStandardYear;
-		}
-		if (remainingDays == 0)
-		{
-			remainingDays = m_daysInStandardYear;
-			years--;
-		}
-
-		isLeapYear = IsLeapYear(years);
-		months = GetMonthFromDayOfYear((int) remainingDays, isLeapYear);
-		remainingDays -= m_daysToStartOfMonth[(int) months - 1];
+		long months = GetMonthFromDayOfYear((int) dayOfYear + 1, isLeapYear);
+		var days = dayOfYear - m_daysToStartOfMonth[(int) months - 1] + 1;
 		if (isLeapYear && months > m_leapYearMonth)
-			remainingDays--;
-		days = (int) remainingDays;
+			days--;
 
 		return (years, months, days);
 	}
@@ -270,27 +243,21 @@ public class StandardCalendar : ICalendar
 		throw new InvalidOperationException($"Invalid day of year is too large: {dayOfYear}");
 	}
 
-	private long GetDaysInMonth(int month, int year)
+	private long GetDaysInMonth(long month, long year)
 	{
-		var yearToCheck = year;
-		var index = month - 1;
-		if (month < 0)
-		{
-			index = 11;
-			yearToCheck--;
-		}
-
-		var days = m_daysInMonth[index];
-		if (index == m_leapYearMonth - 1 && IsLeapYear(yearToCheck))
+		var days = m_daysInMonth[(int) month - 1];
+		if (month == m_leapYearMonth && IsLeapYear(year))
 			days++;
-
 		return days;
 	}
+
+	// StandardCalendar formats times with DateTime, so it has the same range of years.
+	private const int c_minYear = 1;
+	private const int c_maxYear = 9999;
 
 	private readonly IReadOnlyList<long> m_daysInMonth;
 	private readonly IReadOnlyList<long> m_daysToStartOfMonth;
 	private readonly long m_daysInStandardYear;
-	private readonly long m_daysInLeapYear;
 	private readonly long m_daysIn400Years;
 	private readonly long m_daysIn100Years;
 	private readonly long m_daysIn4Years;

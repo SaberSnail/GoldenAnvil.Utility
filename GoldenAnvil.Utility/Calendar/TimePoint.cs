@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace GoldenAnvil.Utility.Calendar;
 
 [DebuggerDisplay("{Seconds}")]
-public class TimePoint : IComparable<TimePoint>
+public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 {
 	internal TimePoint(long seconds, ICalendar calendar)
 	{
@@ -32,6 +32,17 @@ public class TimePoint : IComparable<TimePoint>
 		return TotalSeconds.CompareTo(that.TotalSeconds);
 	}
 
+	public bool Equals(TimePoint that) =>
+		that is not null && Calendar == that.Calendar && TotalSeconds == that.TotalSeconds;
+
+	public override bool Equals(object obj) => Equals(obj as TimePoint);
+
+	public override int GetHashCode() => TotalSeconds.GetHashCode();
+
+	public static bool operator ==(TimePoint left, TimePoint right) => left?.Equals(right) ?? right is null;
+
+	public static bool operator !=(TimePoint left, TimePoint right) => !(left == right);
+
 	public static bool operator <(TimePoint left, TimePoint right) => left.CompareTo(right) < 0;
 
 	public static bool operator <=(TimePoint left, TimePoint right) => left.CompareTo(right) <= 0;
@@ -42,9 +53,9 @@ public class TimePoint : IComparable<TimePoint>
 
 	public static TimeOffset operator -(TimePoint point1, TimePoint point2)
 	{
-		if (point1.Calendar != point1.Calendar)
+		if (point1.Calendar != point2.Calendar)
 			throw new InvalidOperationException("Points must be created with the same calendar.");
-		return new(Math.Abs(point1.TotalSeconds - point2.TotalSeconds), point1.Calendar);
+		return new(point1.TotalSeconds - point2.TotalSeconds, point1.Calendar);
 	}
 
 	public static TimePoint operator -(TimePoint point, TimeOffset offset)
