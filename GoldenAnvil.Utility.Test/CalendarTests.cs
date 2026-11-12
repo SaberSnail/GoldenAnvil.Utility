@@ -258,6 +258,63 @@ public class CalendarTests
 		Assert.Throws<InvalidOperationException>(() => _ = point1 - point2);
 	}
 
+	[TestCase(1, 1, 1, 0, 0, 0)]
+	[TestCase(2000, 2, 29, 13, 14, 15)]
+	[TestCase(9999, 12, 31, 23, 59, 59)]
+	public void TestSaveAndLoad(int year, int month, int day, int hour, int minute, int second)
+	{
+		var calendar = StandardCalendar.CreateStandard();
+		var point = calendar.CreateTimePoint(year, month, day, hour, minute, second);
+		Assert.That(calendar.LoadFromString(point.SaveToString()), Is.EqualTo(point));
+	}
+
+	[Test]
+	public void TestSaveIsTheSameInEveryCulture()
+	{
+		var calendar = StandardCalendar.CreateStandard();
+		var point = calendar.CreateTimePoint(2001, 1, 2, 3, 4, 5);
+		var originalCulture = CultureInfo.CurrentCulture;
+		try
+		{
+			var saved = point.SaveToString();
+			CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("de-DE");
+			Assert.Multiple(() =>
+			{
+				Assert.That(point.SaveToString(), Is.EqualTo(saved));
+				Assert.That(calendar.LoadFromString(saved), Is.EqualTo(point));
+			});
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = originalCulture;
+		}
+	}
+
+	[TestCase("")]
+	[TestCase(null)]
+	[TestCase("abc")]
+	[TestCase("1.5")]
+	[TestCase("1,000")]
+	public void TestLoadInvalidTextThrows(string? text)
+	{
+		var calendar = StandardCalendar.CreateStandard();
+		Assert.Throws<FormatException>(() => calendar.LoadFromString(text!));
+	}
+
+	[Test]
+	public void TestLoadOutOfRangeThrows()
+	{
+		var calendar = StandardCalendar.CreateStandard();
+		var first = calendar.CreateTimePoint(1, 1, 1);
+		var last = calendar.CreateTimePoint(9999, 12, 31, 23, 59, 59);
+		var oneSecond = calendar.CreateTimeOffset(0, 0, 0, 1);
+		Assert.Multiple(() =>
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() => calendar.LoadFromString((first - oneSecond).SaveToString()));
+			Assert.Throws<ArgumentOutOfRangeException>(() => calendar.LoadFromString((last + oneSecond).SaveToString()));
+		});
+	}
+
 	[Test]
 	public void TestTimePointEquality()
 	{

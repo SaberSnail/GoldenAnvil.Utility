@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace GoldenAnvil.Utility.Calendar;
 
@@ -27,6 +28,18 @@ public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 	public int Minute => Parts.Minute;
 
 	public int Second => Parts.Second;
+
+	/// <summary>
+	/// Writes this time as text that <see cref="ICalendar.LoadFromString"/> reads back, the same in every culture.
+	/// </summary>
+	public string SaveToString() => TotalSeconds.ToString(CultureInfo.InvariantCulture);
+
+	internal static long ReadSavedTotalSeconds(string text)
+	{
+		if (!long.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var totalSeconds))
+			throw new FormatException($"\"{text}\" isn't a saved time.");
+		return totalSeconds;
+	}
 
 	internal ICalendar Calendar { get; }
 

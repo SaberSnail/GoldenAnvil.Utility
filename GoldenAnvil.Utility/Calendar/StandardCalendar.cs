@@ -97,6 +97,15 @@ public class StandardCalendar : ICalendar
 	public TimePoint GetStartOfDay(TimePoint time) =>
 		new(m_secondsInDay * (time.TotalSeconds / m_secondsInDay), this);
 
+	public TimePoint LoadFromString(string text)
+	{
+		var totalSeconds = TimePoint.ReadSavedTotalSeconds(text);
+		var endSeconds = GetDaysBeforeYear(c_maxYear + 1) * m_secondsInDay;
+		if (totalSeconds < 0 || totalSeconds >= endSeconds)
+			throw new ArgumentOutOfRangeException(nameof(text), text, $"The saved time is outside years {c_minYear} to {c_maxYear}.");
+		return new(totalSeconds, this);
+	}
+
 	public TimePointParts GetParts(TimePoint point)
 	{
 		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(point.TotalSeconds);
