@@ -6,25 +6,15 @@ namespace GoldenAnvil.Utility.Calendar;
 [DebuggerDisplay("{TotalSeconds}")]
 public class TimeOffset : IComparable<TimeOffset>, IEquatable<TimeOffset>
 {
-	internal TimeOffset(long offsetSeconds, ICalendar calendar)
+	internal TimeOffset(long offsetSeconds, CalendarBase calendar)
 	{
 		TotalSeconds = offsetSeconds;
 		Calendar = calendar;
 	}
 
-	public long TotalSeconds { get; }
+	internal long TotalSeconds { get; }
 
-	public TimeOffsetParts Parts => Calendar.GetParts(this);
-
-	public long Days => Parts.Days;
-
-	public int Hours => Parts.Hours;
-
-	public int Minutes => Parts.Minutes;
-
-	public int Seconds => Parts.Seconds;
-
-	internal ICalendar Calendar { get; }
+	internal CalendarBase Calendar { get; }
 
 	public string RenderTimeFrom(TimePoint point, TimeFormat format)
 	{

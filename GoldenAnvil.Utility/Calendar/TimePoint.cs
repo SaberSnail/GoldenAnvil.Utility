@@ -7,30 +7,16 @@ namespace GoldenAnvil.Utility.Calendar;
 [DebuggerDisplay("{TotalSeconds}")]
 public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 {
-	internal TimePoint(long seconds, ICalendar calendar)
+	internal TimePoint(long seconds, CalendarBase calendar)
 	{
 		TotalSeconds = seconds;
 		Calendar = calendar;
 	}
 
-	public long TotalSeconds { get; }
-
-	public TimePointParts Parts => Calendar.GetParts(this);
-
-	public int Year => Parts.Year;
-
-	public int Month => Parts.Month;
-
-	public int Day => Parts.Day;
-
-	public int Hour => Parts.Hour;
-
-	public int Minute => Parts.Minute;
-
-	public int Second => Parts.Second;
+	internal long TotalSeconds { get; }
 
 	/// <summary>
-	/// Writes this time as text that <see cref="ICalendar.LoadFromString"/> reads back, the same in every culture.
+	/// Writes this time as text that <see cref="CalendarBase.LoadFromString"/> reads back, the same in every culture.
 	/// </summary>
 	public string SaveToString() => TotalSeconds.ToString(CultureInfo.InvariantCulture);
 
@@ -41,7 +27,7 @@ public class TimePoint : IComparable<TimePoint>, IEquatable<TimePoint>
 		return totalSeconds;
 	}
 
-	internal ICalendar Calendar { get; }
+	internal CalendarBase Calendar { get; }
 
 	public string Render(TimeFormat format) => Calendar.FormatTime(this, format);
 

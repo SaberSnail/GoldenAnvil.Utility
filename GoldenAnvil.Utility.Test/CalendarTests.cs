@@ -59,7 +59,7 @@ public class CalendarTests
 	{
 		var calendar = StandardCalendar.CreateStandard();
 		var point = calendar.CreateTimePoint(year, month, day, 13, 14, 15);
-		Assert.That(point.Parts, Is.EqualTo(new TimePointParts(year, month, day, 13, 14, 15)));
+		Assert.That(calendar.GetParts(point), Is.EqualTo(new StandardTimePointParts(year, month, day, 13, 14, 15)));
 	}
 
 	[TestCase(2000, 1, 1, -1, 0, 1999, 12, 31, 0, 0, 0)]
@@ -86,8 +86,8 @@ public class CalendarTests
 		var point = calendar.CreateTimePoint(year, month, day);
 		var offset = calendar.CreateTimeOffset(dayOffset, 0, 0, secondOffset);
 		var adjustedPoint = point + offset;
-		Assert.That(adjustedPoint.Parts,
-			Is.EqualTo(new TimePointParts(expectedYear, expectedMonth, expectedDay, expectedHour, expectedMinute, expectedSecond)));
+		Assert.That(calendar.GetParts(adjustedPoint),
+			Is.EqualTo(new StandardTimePointParts(expectedYear, expectedMonth, expectedDay, expectedHour, expectedMinute, expectedSecond)));
 	}
 
 	[Test]
@@ -101,7 +101,7 @@ public class CalendarTests
 			if (calendar.CreateTimePoint(date.Year, date.Month, date.Day) != point)
 				Assert.Fail($"Creating {date:d} gave a different time than adding days up to it.");
 
-			var parts = point.Parts;
+			var parts = calendar.GetParts(point);
 			if (parts.Year != date.Year || parts.Month != date.Month || parts.Day != date.Day)
 				Assert.Fail($"Adding days up to {date:d} gave {parts}.");
 
@@ -123,9 +123,9 @@ public class CalendarTests
 		var oneDay = calendar.CreateTimeOffset(1, 0, 0, 0);
 		Assert.Multiple(() =>
 		{
-			Assert.That((calendar.CreateTimePoint(4, 12, 7) + oneDay).Parts, Is.EqualTo(new TimePointParts(5, 1, 1, 0, 0, 0)));
-			Assert.That((calendar.CreateTimePoint(4, 1, 7) + oneDay).Parts, Is.EqualTo(new TimePointParts(4, 2, 1, 0, 0, 0)));
-			Assert.That((calendar.CreateTimePoint(4, 1, 1) + calendar.CreateTimeOffset(84, 0, 0, 0)).Parts, Is.EqualTo(new TimePointParts(5, 1, 1, 0, 0, 0)));
+			Assert.That(calendar.GetParts(calendar.CreateTimePoint(4, 12, 7) + oneDay), Is.EqualTo(new StandardTimePointParts(5, 1, 1, 0, 0, 0)));
+			Assert.That(calendar.GetParts(calendar.CreateTimePoint(4, 1, 7) + oneDay), Is.EqualTo(new StandardTimePointParts(4, 2, 1, 0, 0, 0)));
+			Assert.That(calendar.GetParts(calendar.CreateTimePoint(4, 1, 1) + calendar.CreateTimeOffset(84, 0, 0, 0)), Is.EqualTo(new StandardTimePointParts(5, 1, 1, 0, 0, 0)));
 			Assert.Throws<ArgumentException>(() => calendar.CreateTimePoint(4, 2, 8));
 		});
 	}
@@ -148,7 +148,7 @@ public class CalendarTests
 	{
 		var calendar = StandardCalendar.CreateStandard();
 		var offset = calendar.CreateTimeOffset(days, hours, minutes, seconds);
-		Assert.That(offset.Parts, Is.EqualTo(new TimeOffsetParts(expectedDays, expectedHours, expectedMinutes, expectedSeconds)));
+		Assert.That(calendar.GetParts(offset), Is.EqualTo(new StandardTimeOffsetParts(expectedDays, expectedHours, expectedMinutes, expectedSeconds)));
 	}
 
 	[TestCase(2000, 1, 1, 1, TimeFormat.Long, "1 day")]
@@ -246,7 +246,7 @@ public class CalendarTests
 		Assert.Multiple(() =>
 		{
 			Assert.That(later + (earlier - later), Is.EqualTo(earlier));
-			Assert.That((earlier - later).Parts, Is.EqualTo(new TimeOffsetParts(-1, 0, 0, 0)));
+			Assert.That(calendar.GetParts(earlier - later), Is.EqualTo(new StandardTimeOffsetParts(-1, 0, 0, 0)));
 		});
 	}
 
@@ -256,6 +256,18 @@ public class CalendarTests
 		var point1 = StandardCalendar.CreateStandard().CreateTimePoint(2001, 1, 1);
 		var point2 = StandardCalendar.CreateStandard().CreateTimePoint(2001, 1, 1);
 		Assert.Throws<InvalidOperationException>(() => _ = point1 - point2);
+	}
+
+	[Test]
+	public void TestUsingPointsFromAnotherCalendarThrows()
+	{
+		var calendar = StandardCalendar.CreateStandard();
+		var otherPoint = StandardCalendar.CreateStandard().CreateTimePoint(2001, 1, 1);
+		Assert.Multiple(() =>
+		{
+			Assert.Throws<InvalidOperationException>(() => calendar.GetParts(otherPoint));
+			Assert.Throws<InvalidOperationException>(() => calendar.FormatTime(otherPoint, TimeFormat.Short));
+		});
 	}
 
 	[TestCase(1, 1, 1, 0, 0, 0)]

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GoldenAnvil.Utility.Calendar;
 
-public class StandardCalendar : ICalendar
+public class StandardCalendar : CalendarBase
 {
 	public static StandardCalendar CreateStandard() => new(
 		new StandardCalendarConfig
@@ -77,7 +77,7 @@ public class StandardCalendar : ICalendar
 		var secondsForHours = hour * m_secondsInHour;
 		var secondsForMinutes = minute * m_secondsInMinute;
 
-		return new(secondsForDays + secondsForHours + secondsForMinutes + second, this);
+		return CreateTimePointFromTotalSeconds(secondsForDays + secondsForHours + secondsForMinutes + second);
 	}
 
 	public TimePoint CreateTimePoint(TimePoint date, int hours, int minutes, int seconds)
@@ -91,30 +91,28 @@ public class StandardCalendar : ICalendar
 		var secondsForDays = days * m_secondsInDay;
 		var secondsForHours = hours * m_secondsInHour;
 		var secondsForMinutes = minutes * m_secondsInMinute;
-		return new TimeOffset(secondsForDays + secondsForHours + secondsForMinutes + seconds, this);
+		return CreateTimeOffsetFromTotalSeconds(secondsForDays + secondsForHours + secondsForMinutes + seconds);
 	}
 
 	public TimePoint GetStartOfDay(TimePoint time) =>
-		new(m_secondsInDay * (time.TotalSeconds / m_secondsInDay), this);
+		CreateTimePointFromTotalSeconds(m_secondsInDay * (GetTotalSeconds(time) / m_secondsInDay));
 
-	public TimePoint LoadFromString(string text)
+	protected override bool IsSupported(TimePoint point)
 	{
-		var totalSeconds = TimePoint.ReadSavedTotalSeconds(text);
-		var endSeconds = GetDaysBeforeYear(c_maxYear + 1) * m_secondsInDay;
-		if (totalSeconds < 0 || totalSeconds >= endSeconds)
-			throw new ArgumentOutOfRangeException(nameof(text), text, $"The saved time is outside years {c_minYear} to {c_maxYear}.");
-		return new(totalSeconds, this);
+		var totalSeconds = GetTotalSeconds(point);
+		return totalSeconds >= 0 && totalSeconds < GetDaysBeforeYear(c_maxYear + 1) * m_secondsInDay;
 	}
 
-	public TimePointParts GetParts(TimePoint point)
+
+	public StandardTimePointParts GetParts(TimePoint point)
 	{
-		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(point.TotalSeconds);
+		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(GetTotalSeconds(point));
 		return new((int) years, (int) months, (int) days, (int) hours, (int) minutes, (int) seconds);
 	}
 
-	public TimeOffsetParts GetParts(TimeOffset offset)
+	public StandardTimeOffsetParts GetParts(TimeOffset offset)
 	{
-		var totalSeconds = offset.TotalSeconds;
+		var totalSeconds = GetTotalSeconds(offset);
 		return new(
 			totalSeconds / m_secondsInDay,
 			(int) (totalSeconds % m_secondsInDay / m_secondsInHour),
@@ -122,20 +120,20 @@ public class StandardCalendar : ICalendar
 			(int) (totalSeconds % m_secondsInMinute));
 	}
 
-	public string FormatTime(TimePoint point, TimeFormat format)
+	public override string FormatTime(TimePoint point, TimeFormat format)
 	{
-		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(point.TotalSeconds);
+		(var years, var months, var days, var hours, var minutes, var seconds) = SplitSeconds(GetTotalSeconds(point));
 		var date = new DateTime((int) years, (int) months, (int) days, (int) hours, (int) minutes, (int) seconds);
 		return date.ToString(m_getFormatStringFunc(format), CultureInfo.CurrentCulture);
 	}
 
-	public string FormatOffsetFrom(TimePoint point, TimeOffset offset, TimeFormat format)
+	public override string FormatOffsetFrom(TimePoint point, TimeOffset offset, TimeFormat format)
 	{
-		if (offset.TotalSeconds < 0)
+		if (GetTotalSeconds(offset) < 0)
 			throw new ArgumentException($"{nameof(offset)} must be positive");
 
-		(var startYears, var startMonths, var startDays, var startHours, var startMinutes, var startSeconds) = SplitSeconds(point.TotalSeconds);
-		(var endYears, var endMonths, var endDays, var endHours, var endMinutes, var endSeconds) = SplitSeconds((point + offset).TotalSeconds);
+		(var startYears, var startMonths, var startDays, var startHours, var startMinutes, var startSeconds) = SplitSeconds(GetTotalSeconds(point));
+		(var endYears, var endMonths, var endDays, var endHours, var endMinutes, var endSeconds) = SplitSeconds(GetTotalSeconds(point + offset));
 
 		// Subtract each part, borrowing from the next larger part when the result is negative.
 		var borrow = 0L;
